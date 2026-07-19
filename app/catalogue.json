@@ -1,0 +1,1666 @@
+[
+  {
+    "id": "ACSA-FR-UC01-REQ001",
+    "type": "Functional",
+    "category": "Declaration",
+    "name": "Capture Declaration",
+    "description": "The system shall capture declarations for normal, late, and delayed registrations for vital events (birth, death, marriage and divorce). ",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC01-REQ002",
+    "type": "Functional",
+    "category": "Declaration",
+    "name": "Generate Declaration ID",
+    "description": "The system shall generate a unique Declaration ID for each declaration record.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC01-REQ003",
+    "type": "Functional",
+    "category": "Declaration",
+    "name": "Attach Evidence",
+    "description": "The system shall allow attaching or referencing supporting documents and attestations.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC01-REQ004",
+    "type": "Functional",
+    "category": "Declaration",
+    "name": "Declaration-to-Registration Linkage",
+    "description": "The system shall support linkage between a declaration and the subsequent registration record.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC01-REQ005",
+    "type": "Functional",
+    "category": "Declaration",
+    "name": "Support Multiple Channels",
+    "description": "The system shall support multiple declaration models (facility-assisted, community, self-service portal, consular).",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC01-REQ006",
+    "type": "Functional",
+    "category": "Declaration",
+    "name": "Notification Retrieval",
+    "description": "The system shall retrieve notification information using a notification number where available.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC01-REQ007",
+    "type": "Functional",
+    "category": "Declaration",
+    "name": "Validation ",
+    "description": "The system shall validate mandatory fields and logical consistency before accepting a declaration.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC01-REQ008",
+    "type": "Functional",
+    "category": "Declaration",
+    "name": "Acknowledge Submission",
+    "description": "The system shall issue an acknowledgement slip, SMS, email, or tracking receipt to the declarant.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC01-REQ009",
+    "type": "Functional",
+    "category": "Declaration",
+    "name": "Audit Trail",
+    "description": "The system shall maintain an audit trail for the user, channel, time of submission, and any subsequent edits or escalations.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC01-REQ010",
+    "type": "Functional",
+    "category": "Declaration",
+    "name": "Deduplication",
+    "description": "The system shall automatically detect and alert users to duplicate records and provide options for merging, invalidating, or dismissing records.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC02-REQ001",
+    "type": "Functional",
+    "category": "Registration",
+    "name": "Create Legal Record",
+    "description": "The system shall create the official legal civil registration record after declaration review and verification.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC02-REQ002",
+    "type": "Functional",
+    "category": "Registration",
+    "name": "Generate Registration ID",
+    "description": "The system shall generate a unique Registration ID for the official record linking it to the declaration ID.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC02-REQ003",
+    "type": "Functional",
+    "category": "Registration",
+    "name": "Assign or Link UIN",
+    "description": "The system shall link to the UID issuing authority and request the issuance of a new UID for a birth, update the UID on marriage registration, if needed, and retire the UID on death registration. ",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC02-REQ004",
+    "type": "Functional",
+    "category": "Registration",
+    "name": "Maintain Registrar History",
+    "description": "The system shall maintain the registrar's approval history, including endorsement details, timestamps, and office codes.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC02-REQ005",
+    "type": "Functional",
+    "category": "Registration",
+    "name": "Enforce Non-Deletion",
+    "description": "The system shall enforce that registration records cannot be deleted; they may only be amended through an authorized process.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC02-REQ006",
+    "type": "Functional",
+    "category": "Registration",
+    "name": "Registrar Authorization",
+    "description": "The system shall ensure that only an authorized or delegated registrar may complete a registration.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC02-REQ007",
+    "type": "Functional",
+    "category": "Registration",
+    "name": "Form Completion",
+    "description": "The system shall allow authorized users to verify the completeness of declaration forms and complete them when information is incomplete or missing. ",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC02-REQ008",
+    "type": "Functional",
+    "category": "Registration",
+    "name": "Prompts and Alerts",
+    "description": "The system shall provide prompts and alerts according to configured protocol.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC02-REQ009",
+    "type": "Functional",
+    "category": "Registration",
+    "name": "Suspension and Cancellation ",
+    "description": "The system shall allow suspension or cancellation of a registration record if proven and authorized by the competent authority that registration was done in a fraudalent manner or by furnishing wrong information. ",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC03-REQ001",
+    "type": "Functional",
+    "category": "Certification",
+    "name": "Generate Certificate",
+    "description": "The system shall generate digital or physical certificates derived from finalized registration records.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC03-REQ002",
+    "type": "Functional",
+    "category": "Certification",
+    "name": "Support Certificate Types",
+    "description": "The system shall support multi-formatted and multilingual certificate models.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC03-REQ003",
+    "type": "Functional",
+    "category": "Certification",
+    "name": "Anti-Fraud Controls",
+    "description": "The system shall include anti-fraud controls on certificates (e.g., QR codes, serial numbers, digital signatures). QR code should be digitally signed or verifiable as a lot of countries print QR code with plain text. ",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC03-REQ004",
+    "type": "Functional",
+    "category": "Certification",
+    "name": "Manage Issuance & Reprints",
+    "description": "The system shall support first certificate issuance, additional copies, and reprints, including payment and delivery options.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC03-REQ005",
+    "type": "Functional",
+    "category": "Certification",
+    "name": "Verification Features",
+    "description": "The system shall provide verification features for certificates, such as QR code lookup or serial number validation.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC03-REQ006",
+    "type": "Functional",
+    "category": "Certification",
+    "name": "Audit Issuance",
+    "description": "The system shall log issuance, reprint count, delivery status, and receipt acknowledgement.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC03-REQ007",
+    "type": "Functional",
+    "category": "Certification",
+    "name": "Internal Submission and Approval",
+    "description": "The system shall allow internal processes for certificate submission and approvals.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC03-REQ008",
+    "type": "Functional",
+    "category": "Certification",
+    "name": "Print Forms and Certificates",
+    "description": "The system shall allow authorized users, including clients, to print certificates. ",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC04-REQ001",
+    "type": "Functional",
+    "category": "Amendments & Corrections",
+    "name": "Support Amendment Requests",
+    "description": "The system shall support amendment and correction requests, including administrative and substantive changes.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC04-REQ002",
+    "type": "Functional",
+    "category": "Amendments & Corrections",
+    "name": "Approval Workflows",
+    "description": "The system shall provide configurable approval workflows for different types of corrections (clerical vs. judicial).",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC04-REQ003",
+    "type": "Functional",
+    "category": "Amendments & Corrections",
+    "name": "Maintain Version History",
+    "description": "The system shall preserve original values and maintain a versioned audit trail of all changes.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC04-REQ004",
+    "type": "Functional",
+    "category": "Amendments & Corrections",
+    "name": "Revise Certificate Issuance",
+    "description": "The system shall issue a revised certificate upon approval of an amendment and flag superseded versions.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC04-REQ005",
+    "type": "Functional",
+    "category": "Amendments & Corrections",
+    "name": "Downstream Notification",
+    "description": "The system shall notify integrated downstream systems (e.g., National ID) of approved changes.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC05-REQ001",
+    "type": "Functional",
+    "category": "Client Messaging",
+    "name": "Send Status Messages",
+    "description": "The system shall send case-status messages to clients and authorized stakeholders (e.g., notification, declaration, registration stages).",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-FR-UC05-REQ002",
+    "type": "Functional",
+    "category": "Client Messaging",
+    "name": "Maintain Delivery Logs",
+    "description": "The system shall maintain delivery logs, including message ID, gateway response, delivery status, timestamps, and retries.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-FR-UC05-REQ003",
+    "type": "Functional",
+    "category": "Client Messaging",
+    "name": "Support Follow-up Actions",
+    "description": "The system shall support follow-up actions for missing information, appointment coordination, and failed deliveries.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-FR-UC05-REQ004",
+    "type": "Functional",
+    "category": "Client Messaging",
+    "name": "Privacy Protection",
+    "description": "The system shall ensure sensitive personal data is not sent through insecure channels and use reference numbers instead.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-FR-UC06-REQ001",
+    "type": "Functional",
+    "category": "Master Data & Identifiers",
+    "name": "Maintain Reference Data",
+    "description": "The system shall maintain authoritative master data for locations, facilities, offices, users, registrars, devices (at least core devices), and reference values.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC06-REQ002",
+    "type": "Functional",
+    "category": "Master Data & Identifiers",
+    "name": "Manage Unique Identifiers",
+    "description": "The system shall manage unique identifiers and coding schemes across the CRVS ecosystem.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-FR-UC06-REQ003",
+    "type": "Functional",
+    "category": "Master Data & Identifiers",
+    "name": "Preserve Historical Mappings",
+    "description": "The system shall preserve historical mappings and effective dates for administrative boundary or facility changes.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-FR-UC06-REQ004",
+    "type": "Functional",
+    "category": "Master Data & Identifiers",
+    "name": "Audit Master Data Changes",
+    "description": "The system shall ensure all master data and identifier changes are traceable and auditable.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC07-REQ001",
+    "type": "Functional",
+    "category": "Payment and Fees",
+    "name": "Calculate Fees",
+    "description": "The system shall calculate applicable fees based on service type, applicant category, urgency, and penalties for late and delayed registration.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC07-REQ002",
+    "type": "Functional",
+    "category": "Payment and Fees",
+    "name": "Validate Payments",
+    "description": "The system shall validate payments made via various channels (mobile money, cash, online gateway).",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC07-REQ003",
+    "type": "Functional",
+    "category": "Payment and Fees",
+    "name": "Issue Receipts",
+    "description": "The system shall issue a receipt (paper or digital) for every accepted payment.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC07-REQ004",
+    "type": "Functional",
+    "category": "Payment and Fees",
+    "name": "Support Reconciliation",
+    "description": "The system shall support reconciliation of transactions by channel, cashier, date, and purpose.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC07-REQ005",
+    "type": "Functional",
+    "category": "Payment and Fees",
+    "name": "Handle Waivers/Discounts",
+    "description": "The system shall support approved exemptions, waivers, and discounts with authorization and audit logging.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC07-REQ006",
+    "type": "Functional",
+    "category": "Payment and Fees",
+    "name": "Payment Exceptions",
+    "description": "The system shall support controlled exception workflows for duplicate payments, failed payments, refunds, and chargebacks.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC08-REQ001",
+    "type": "Functional",
+    "category": "Vital Statistics",
+    "name": "Generate Statistical Outputs",
+    "description": "The system shall generate statistical tables, indicators, dashboards, and exports from validated registration data.",
+    "priority": "Could"
+  },
+  {
+    "id": "ACSA-FR-UC08-REQ002",
+    "type": "Functional",
+    "category": "Vital Statistics",
+    "name": "Adhere to Standards",
+    "description": "The system shall align vital statistics outputs with UN principles/recommendations and national standards.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC08-REQ003",
+    "type": "Functional",
+    "category": "Vital Statistics",
+    "name": "Anonymize Data",
+    "description": "The system shall mask, remove, or suppress personally identifiable information (PII) in statistical outputs.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC08-REQ004",
+    "type": "Functional",
+    "category": "Vital Statistics",
+    "name": "Apply Disclosure Control",
+    "description": "The system shall store extraction date, cut-off date, reference period, code-list version, inclusion rules, publication version, confidentiality flags, reviewer/approver details, and distribution log.",
+    "priority": "Could"
+  },
+  {
+    "id": "ACSA-FR-UC08-REQ005",
+    "type": "Functional",
+    "category": "Vital Statistics",
+    "name": "Store Publication Metadata",
+    "description": "The system shall support data quality checks for completeness, consistency, duplicate impacts, outliers, age-heaping, coding issues, and other agreed indicators.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-FR-UC08-REQ006",
+    "type": "Functional",
+    "category": "Vital Statistics",
+    "name": "Data Quality Checks",
+    "description": "The system shall enable capture, update, and processing of a declaration using devices without internet connectivity.",
+    "priority": "Could"
+  },
+  {
+    "id": "ACSA-FR-UC09-REQ001",
+    "type": "Functional",
+    "category": "Mobile & Offline",
+    "name": "Offline Capture",
+    "description": "",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-FR-UC09-REQ002",
+    "type": "Functional",
+    "category": "Mobile & Offline",
+    "name": "Secure Local Storage",
+    "description": "The system shall encrypt offline data at rest on the device and make it accessible only to authorized users.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-FR-UC09-REQ003",
+    "type": "Functional",
+    "category": "Mobile & Offline",
+    "name": "Data Synchronization",
+    "description": "The system shall synchronize offline records with the central CRVS database once connectivity is restored.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-FR-UC09-REQ004",
+    "type": "Functional",
+    "category": "Mobile & Offline",
+    "name": "Conflict Resolution",
+    "description": "The system shall apply duplicate detection and conflict resolution when records are uploaded from offline devices.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-FR-UC09-REQ005",
+    "type": "Functional",
+    "category": "Mobile & Offline",
+    "name": "Audit Traceability",
+    "description": "The system shall maintain an audit trail from device capture to central synchronization (device ID, user ID, timestamps).",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-FR-UC09-REQ006",
+    "type": "Functional",
+    "category": "Mobile & Offline",
+    "name": "Offline Authentication",
+    "description": "The system shall support secure offline authentication using cached credentials or another approved mechanism.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-FR-UC09-REQ007",
+    "type": "Functional",
+    "category": "Mobile & Offline",
+    "name": "Offline Identifier Reconciliation",
+    "description": "The system shall reconcile temporary or preallocated offline identifiers with official central identifiers after synchronization.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-FR-UC10-REQ001",
+    "type": "Functional",
+    "category": "Authentication & Certificate Verification",
+    "name": "Provide Verification Service",
+    "description": "The system shall provide a secure service to verify civil registration certificates and underlying event records through a verifiable credentials platform (if available) \u2013 the CRVS system should not try to re-create such a platform.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC10-REQ002",
+    "type": "Functional",
+    "category": "Authentication & Certificate Verification",
+    "name": "Support Multiple Channels",
+    "description": "The system shall support multiple verification channels: online portal, QR/barcode scan, API, and offline verification.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-FR-UC10-REQ003",
+    "type": "Functional",
+    "category": "Authentication & Certificate Verification",
+    "name": "Enforce Access Control",
+    "description": "The system shall enforce differentiated access levels (public vs. restricted) based on legal frameworks and user credentials.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-FR-UC10-REQ004",
+    "type": "Functional",
+    "category": "Authentication & Certificate Verification",
+    "name": "Maintain Audit Log",
+    "description": "The system shall maintain a complete audit trail of all verification attempts, including user, channel, and timestamp.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-FR-UC10-REQ005",
+    "type": "Functional",
+    "category": "Authentication & Certificate Verification",
+    "name": "Differentiated Verification Responses",
+    "description": "The system shall support differentiated verification responses, ranging from yes/no confirmation to full legal verification according to user authorization and legal rules.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-FR-UC11-REQ001",
+    "type": "Functional",
+    "category": "Duplication Management",
+    "name": "Detect Duplicates",
+    "description": "The system shall detect and prevent duplicate registrations using scheduled or event-based matching algorithms.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC11-REQ002",
+    "type": "Functional",
+    "category": "Duplication Management",
+    "name": "Provide Resolution Workflow",
+    "description": "The system shall provide a workflow for resolving data conflicts and potential duplicate records (merge, false positive, invalidate).",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC11-REQ003",
+    "type": "Functional",
+    "category": "Duplication Management",
+    "name": "Enforce Uniqueness",
+    "description": "The system shall ensure that each vital event and each individual has a unique identifier (e.g., Unique ID/PIN).",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC11-REQ004",
+    "type": "Functional",
+    "category": "Duplication Management",
+    "name": "Archive Original Records",
+    "description": "The system shall archive original records when merged or invalidated, never physically deleting them from the database.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC11-REQ005",
+    "type": "Functional",
+    "category": "Duplication Management",
+    "name": "Configure Matching Rules",
+    "description": "The system shall allow administrators to configure matching thresholds, matching rules, blocking parameters, and review queues.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC11-REQ006",
+    "type": "Functional",
+    "category": "Duplication Management",
+    "name": "Side-by-Side Duplicate Review",
+    "description": "The system shall display potential duplicate records side by side with matching information highlighted for registrar review.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC12-REQ001",
+    "type": "Functional",
+    "category": "Case Workflow Management",
+    "name": "Support Configurable Workflows",
+    "description": "The system shall support configurable workflows for different event types (birth, death, marriage).",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC12-REQ002",
+    "type": "Functional",
+    "category": "Case Workflow Management",
+    "name": "Role-based Task Assignment",
+    "description": "The system shall provide role-based task assignments and work queues (e.g., clerk, registrar, supervisor).",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC12-REQ003",
+    "type": "Functional",
+    "category": "Case Workflow Management",
+    "name": "Generate Unique Registration Number",
+    "description": "The system shall generate a unique registration number upon final approval of a case.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC12-REQ004",
+    "type": "Functional",
+    "category": "Case Workflow Management",
+    "name": "Send Status Notifications",
+    "description": "The system shall  send status notifications to informants at critical stages (submission, approval, rejection).",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC12-REQ005",
+    "type": "Functional",
+    "category": "Case Workflow Management",
+    "name": "Enforce State Transitions",
+    "description": "The system shall enforce that state transitions follow configured workflow paths and user roles.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC12-REQ006",
+    "type": "Functional",
+    "category": "Case Workflow Management",
+    "name": "Monitor SLA & Escalate",
+    "description": "The system shall monitor Service Level Agreements (SLAs) and automatically escalate breached or at-risk cases.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC12-REQ007",
+    "type": "Functional",
+    "category": "Case Workflow Management",
+    "name": "Immutable Status History",
+    "description": "The system shall maintain immutable status history for each case, including old state, new state, actor, timestamp, and comments.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC12-REQ008",
+    "type": "Functional",
+    "category": "Case Workflow Management",
+    "name": "Authorized Case Reassignment",
+    "description": "The system shall support authorized reassignment of cases with reason capture and audit logging.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC13-REQ001",
+    "type": "Functional",
+    "category": "User Management",
+    "name": "Support Role-Based Access Control (RBAC)",
+    "description": "The system shall support role-based access control (RBAC) for all functions.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-FR-UC13-REQ002",
+    "type": "Functional",
+    "category": "User Management",
+    "name": "Enforce Strong Password Policies",
+    "description": "The system shall enforce strong password policies (minimum length, complexity, expiry).",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-FR-UC13-REQ003",
+    "type": "Functional",
+    "category": "User Management",
+    "name": "Provide Audit Trail",
+    "description": "The system shall provide an audit trail of all user management activities (create, update, disable, delete).",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-FR-UC13-REQ004",
+    "type": "Functional",
+    "category": "User Management",
+    "name": "Allow Administrator Management",
+    "description": "The system shall allow administrators to manage user accounts (create, read, update, disable, delete).",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-FR-UC13-REQ005",
+    "type": "Functional",
+    "category": "User Management",
+    "name": "Geographic Scope Assignment",
+    "description": "The system shall support geographic scope assignment for users to restrict data access by jurisdiction.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-FR-UC13-REQ006",
+    "type": "Functional",
+    "category": "User Management",
+    "name": "Terminate Disabled User Sessions",
+    "description": "The system shall terminate active sessions immediately when a user account is disabled.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-FR-UC13-REQ007",
+    "type": "Functional",
+    "category": "User Management",
+    "name": "Periodic User Access Review",
+    "description": "The system shall support periodic review of active users and assigned roles.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-FR-UC13-REQ008",
+    "type": "Functional",
+    "category": "User Management",
+    "name": "Task Management",
+    "description": "The system shall allow task management features for users, such as grouping applications by completion or pending status.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-FR-UC13-REQ009",
+    "type": "Functional",
+    "category": "User Management",
+    "name": "Local Office Process Support",
+    "description": "The system shall support local registration office processes, including entry of forms, approval management, and identification of gaps.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-FR-UC14-REQ001",
+    "type": "Functional",
+    "category": "User Portal & Appointments",
+    "name": "Provide Public Web Portal",
+    "description": "The system shall provide a public web portal for public services.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-FR-UC14-REQ002",
+    "type": "Functional",
+    "category": "User Portal & Appointments",
+    "name": "Online Application Submission",
+    "description": "The portal shall allow users to submit registration applications online.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-FR-UC14-REQ003",
+    "type": "Functional",
+    "category": "User Portal & Appointments",
+    "name": "Application Tracking",
+    "description": "The portal shall allow users to track the status of their applications.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-FR-UC14-REQ004",
+    "type": "Functional",
+    "category": "User Portal & Appointments",
+    "name": "Online Appointment Scheduling",
+    "description": "The portal shall provide an online appointment scheduling system.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-FR-UC14-REQ005",
+    "type": "Functional",
+    "category": "User Portal & Appointments",
+    "name": "Automated Reminders",
+    "description": "The system shall send automated reminders for upcoming appointments via SMS/email.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-FR-UC14-REQ006",
+    "type": "Functional",
+    "category": "User Portal & Appointments",
+    "name": "Secure Account Creation",
+    "description": "The portal shall support secure user account creation and verification using email or SMS OTP.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-FR-UC14-REQ007",
+    "type": "Functional",
+    "category": "User Portal & Appointments",
+    "name": "Document Upload",
+    "description": "The portal shall allow users to upload supporting documents in accepted formats and within configured size limits.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-FR-UC14-REQ008",
+    "type": "Functional",
+    "category": "User Portal & Appointments",
+    "name": "Save and Resume Applications",
+    "description": "The portal shall allow partially completed applications to be saved and resumed.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-FR-UC14-REQ009",
+    "type": "Functional",
+    "category": "User Portal & Appointments",
+    "name": "Appointment Check-in",
+    "description": "The system shall support appointment check-in using a QR code or reference number and update appointment status.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-FR-UC15-REQ001",
+    "type": "Functional",
+    "category": "Migration & Legacy Capture",
+    "name": "Support Bulk Import",
+    "description": "The system shall support bulk import of historical data from external sources (databases, spreadsheets).",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC15-REQ002",
+    "type": "Functional",
+    "category": "Migration & Legacy Capture",
+    "name": "Interface for Manual Entry",
+    "description": "The system shall provide an interface for manual entry of legacy paper records.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-FR-UC15-REQ003",
+    "type": "Functional",
+    "category": "Migration & Legacy Capture",
+    "name": "Maintain Audit Trail for Migration",
+    "description": "The system shall maintain an audit trail of all migrated records, including source reference and timestamp.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC15-REQ004",
+    "type": "Functional",
+    "category": "Migration & Legacy Capture",
+    "name": "Flag Legacy Records",
+    "description": "The system shall allow legacy data to be included or excluded from statistical reports based on configuration.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-FR-UC15-REQ005",
+    "type": "Functional",
+    "category": "Migration & Legacy Capture",
+    "name": "Validate Migrated Data",
+    "description": "The system shall validate migrated data against schema, mandatory-field, format, duplicate, and quality rules before final commit.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-FR-UC15-REQ006",
+    "type": "Functional",
+    "category": "Migration & Legacy Capture",
+    "name": "Migration Quarantine and Error Reports",
+    "description": "The system shall quarantine records that fail migration validation and generate error and reconciliation reports.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-FR-UC15-REQ007",
+    "type": "Functional",
+    "category": "Migration & Legacy Capture",
+    "name": "Link Scanned Legacy Images",
+    "description": "The system shall link scanned images or original source references to migrated legacy records.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC16-REQ001",
+    "type": "Functional",
+    "category": "Reporting & Analytics",
+    "name": "Provide Predefined Reports",
+    "description": "The system shall provide predefined statistical reports on births, deaths, marriages, and divorces.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC16-REQ002",
+    "type": "Functional",
+    "category": "Reporting & Analytics",
+    "name": "Allow Ad-hoc Reports",
+    "description": "The system shall allow authorized users to generate ad-hoc reports with customizable filters.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC16-REQ003",
+    "type": "Functional",
+    "category": "Reporting & Analytics",
+    "name": "Support Standard Exports",
+    "description": "The system shall support export of data in standard formats (CSV, SDMX) for integration with the National Statistics Office.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC16-REQ004",
+    "type": "Functional",
+    "category": "Reporting & Analytics",
+    "name": "Display KPI Dashboards",
+    "description": "The system shall maintain a dashboard displaying key performance indicators (KPIs) for registration coverage and timeliness.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC16-REQ005",
+    "type": "Functional",
+    "category": "Reporting & Analytics",
+    "name": "Anonymize Public Outputs",
+    "description": "The system shall anonymize personal data in any publicly accessible or externally shared statistical output.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC16-REQ006",
+    "type": "Functional",
+    "category": "Reporting & Analytics",
+    "name": "Separate Reporting Layer",
+    "description": "The system shall support a separate reporting layer, reporting database, or data warehouse to avoid degrading operational performance.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC16-REQ007",
+    "type": "Functional",
+    "category": "Reporting & Analytics",
+    "name": "Report Reproducibility",
+    "description": "The system shall store report parameters, query logic, scripts, or parameter sets used so that published outputs are reproducible.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC17-REQ001",
+    "type": "Functional",
+    "category": "Interoperability, Data Sharing, Devices & Peripherals",
+    "name": "Provide APIs for Data Exchange",
+    "description": "The system shall provide APIs for real-time data exchange with health facilities, police, courts, ID systems, and other authorized systems.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC17-REQ002",
+    "type": "Functional",
+    "category": "Interoperability, Data Sharing, Devices & Peripherals",
+    "name": "Support Scheduled Batch Exports",
+    "description": "The system shall support scheduled batch exports to the National Statistics Office in SDMX format.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-FR-UC17-REQ003",
+    "type": "Functional",
+    "category": "Interoperability, Data Sharing, Devices & Peripherals",
+    "name": "Integrate with National ID",
+    "description": "The system shall integrate with the National ID system for identity verification as well as updating it.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-FR-UC17-REQ004",
+    "type": "Functional",
+    "category": "Interoperability, Data Sharing, Devices & Peripherals",
+    "name": "Support Document Scanners",
+    "description": "The system shall support document scanners for uploading supporting documents.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC17-REQ005",
+    "type": "Functional",
+    "category": "Interoperability, Data Sharing, Devices & Peripherals",
+    "name": "Support Biometric Devices",
+    "description": "The system shall support fingerprint readers for biometric capture of applicants where required.",
+    "priority": "Could"
+  },
+  {
+    "id": "ACSA-FR-UC17-REQ006",
+    "type": "Functional",
+    "category": "Interoperability, Data Sharing, Devices & Peripherals",
+    "name": "Support Certificate Printers",
+    "description": "The system shall support certificate printers for issuing secure documents.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC17-REQ007",
+    "type": "Functional",
+    "category": "Interoperability, Data Sharing, Devices & Peripherals",
+    "name": "Log All Data Sharing",
+    "description": "The system shall log all data sharing and interoperability transactions.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC17-REQ008",
+    "type": "Functional",
+    "category": "Interoperability, Data Sharing, Devices & Peripherals",
+    "name": "External System Authentication",
+    "description": "The system shall authenticate external systems and enforce authorization before any data exchange.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-FR-UC17-REQ009",
+    "type": "Functional",
+    "category": "Interoperability, Data Sharing, Devices & Peripherals",
+    "name": "Data Sharing Governance",
+    "description": "The system shall support data-sharing agreements, purpose limitation, consent checks where required, and approval workflows for sensitive extracts.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-FR-UC17-REQ010",
+    "type": "Functional",
+    "category": "Interoperability, Data Sharing, Devices & Peripherals",
+    "name": "Integration Health Monitoring",
+    "description": "The system shall monitor integration health and retry failed transactions according to configured rules before escalation.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-FR-UC17-REQ011",
+    "type": "Functional",
+    "category": "Interoperability, Data Sharing, Devices & Peripherals",
+    "name": "Device Status and Error Logging",
+    "description": "The system shall detect connected peripherals, display device status, log device errors, and support retry or escalation.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-FR-UC18-REQ001",
+    "type": "Functional",
+    "category": "Legal Identity",
+    "name": "Maintain Secure Identity Registry",
+    "description": "The system shall maintain a secure registry of all legal identities with lifecycle status (Active, Deceased, Inactive).",
+    "priority": "Could"
+  },
+  {
+    "id": "ACSA-FR-UC18-REQ002",
+    "type": "Functional",
+    "category": "Legal Identity",
+    "name": "Provide Verification API",
+    "description": "The system shall provide a secure API for authorized external agencies to verify legal identity.",
+    "priority": "Could"
+  },
+  {
+    "id": "ACSA-FR-UC18-REQ003",
+    "type": "Functional",
+    "category": "Legal Identity",
+    "name": "Update Identity from Events",
+    "description": "The system shall update the legal identity record upon marriage, divorce, name change, or other legal amendments.",
+    "priority": "Could"
+  },
+  {
+    "id": "ACSA-FR-UC18-REQ004",
+    "type": "Functional",
+    "category": "Legal Identity",
+    "name": "Deactivate Identity on Death",
+    "description": "The system shall deactivate (mark as \"Deceased\") the legal identity record upon death registration.",
+    "priority": "Could"
+  },
+  {
+    "id": "ACSA-FR-UC18-REQ005",
+    "type": "Functional",
+    "category": "Legal Identity",
+    "name": "Support Temporary Deactivation",
+    "description": "The system shall support temporary deactivation of a legal identity in cases of migration or identity theft reports.",
+    "priority": "Could"
+  },
+  {
+    "id": "ACSA-FR-UC18-REQ006",
+    "type": "Functional",
+    "category": "Legal Identity",
+    "name": "Log All Identity Access",
+    "description": "The system shall log all access to identity data for audit purposes.",
+    "priority": "Could"
+  },
+  {
+    "id": "ACSA-FR-UC18-REQ007",
+    "type": "Functional",
+    "category": "Legal Identity",
+    "name": "Non-Reassignment of Legal Identity Identifier",
+    "description": "The system shall ensure that a unique legal identity identifier is never reassigned to another individual, including after death.",
+    "priority": "Could"
+  },
+  {
+    "id": "ACSA-FR-UC18-REQ008",
+    "type": "Functional",
+    "category": "Legal Identity",
+    "name": "Legal Identity Change History",
+    "description": "The system shall retain a complete history of all legal identity changes, including previous names, statuses, supporting events, timestamps, and approving authority.",
+    "priority": "Could"
+  },
+  {
+    "id": "ACSA-FR-UC18-REQ009",
+    "type": "Functional",
+    "category": "Legal Identity",
+    "name": "Prevent Second Active Identity",
+    "description": "The system shall prevent creation of a second active identity until duplicate identity alerts are resolved.",
+    "priority": "Could"
+  },
+  {
+    "id": "ACSA-NFR-PERF-REQ001",
+    "type": "Non-functional",
+    "category": "Performance",
+    "name": "Registration Transaction Response",
+    "description": "The system shall process birth, death, marriage, divorce, adoption, and recognition registrations within \u2264 3 seconds under normal load.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-NFR-PERF-REQ002",
+    "type": "Non-functional",
+    "category": "Performance",
+    "name": "Certificate Generation Response",
+    "description": "Certificate generation shall be completed between 5- 30 seconds.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-NFR-PERF-REQ003",
+    "type": "Non-functional",
+    "category": "Performance",
+    "name": "Search Response",
+    "description": "Record search operations shall return results between 5 -30 seconds at district/national level queries. ",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-NFR-PERF-REQ004",
+    "type": "Non-functional",
+    "category": "Performance",
+    "name": "Concurrent National Usage",
+    "description": "The system shall support at least \u2265 XXXX concurrent users nationally.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-NFR-PERF-REQ005",
+    "type": "Non-functional",
+    "category": "Performance",
+    "name": "Concurrent Regional Usage",
+    "description": "The system shall support at least XXXX concurrent users per region.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-NFR-PERF-REQ006",
+    "type": "Non-functional",
+    "category": "Performance",
+    "name": "Concurrent District Usage",
+    "description": "The system shall support at least \u2265 XXX concurrent users per district.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-NFR-PERF-REQ007",
+    "type": "Non-functional",
+    "category": "Performance",
+    "name": "Bulk Import Throughput",
+    "description": "Bulk import shall support at least \u2265 1 million records per batch.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-NFR-PERF-REQ008",
+    "type": "Non-functional",
+    "category": "Performance",
+    "name": "National Report Performance",
+    "description": "National statistical reports shall generate within \u2264 60 seconds.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-NFR-PERF-REQ009",
+    "type": "Non-functional",
+    "category": "Performance",
+    "name": "Performance Monitoring",
+    "description": "The system must allow authorized users to monitor system availability and performance.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-NFR-PERF-REQ010",
+    "type": "Non-functional",
+    "category": "Performance",
+    "name": "Scalable Architecture",
+    "description": "The system shall support horizontal scaling and population growth over 20+ years without requiring system redesign.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-NFR-PERF-REQ011",
+    "type": "Non-functional",
+    "category": "Performance",
+    "name": "Projected Transaction Volumes",
+    "description": "The system technical design shall scale to support projected transaction volumes over time.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-NFR-PERF-REQ012",
+    "type": "Non-functional",
+    "category": "Performance",
+    "name": "Efficient Resource Utilization",
+    "description": "CPU, memory, storage, and network utilization shall remain within defined thresholds during normal and peak operations.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-NFR-SEC-REQ001",
+    "type": "Non-functional",
+    "category": "Security",
+    "name": "Secure Authentication",
+    "description": "All users shall authenticate securely before accessing the system.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-NFR-SEC-REQ002",
+    "type": "Non-functional",
+    "category": "Security",
+    "name": "Multi-Factor Authentication",
+    "description": "The system shall require multi-factor authentication for administrators, privileged users, and sensitive operations.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-NFR-SEC-REQ003",
+    "type": "Non-functional",
+    "category": "Security",
+    "name": "Least Privilege Access",
+    "description": "The system shall enforce least-privilege access using role-based and jurisdiction-based access controls.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-NFR-SEC-REQ004",
+    "type": "Non-functional",
+    "category": "Security",
+    "name": "Session Timeout",
+    "description": "The system shall terminate or lock inactive sessions after a configured time and require re-authentication.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-NFR-SEC-REQ005",
+    "type": "Non-functional",
+    "category": "Security",
+    "name": "Encryption in Transit and at Rest",
+    "description": "The system shall enforce encryption of data at rest and in transit, including offline workstation data.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-NFR-SEC-REQ006",
+    "type": "Non-functional",
+    "category": "Security",
+    "name": "Secure Key Management",
+    "description": "The system shall implement secure key management, including separation of encryption keys from data and regular key rotation.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-NFR-SEC-REQ007",
+    "type": "Non-functional",
+    "category": "Security",
+    "name": "Secure Password Storage",
+    "description": "Passwords shall be stored using strong salted hashing and appropriate work factors; plain text password storage is prohibited.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-NFR-SEC-REQ008",
+    "type": "Non-functional",
+    "category": "Security",
+    "name": "Application Threat Protection",
+    "description": "The system shall protect against SQL injection, cross-site scripting, cross-site request forgery, brute force attacks, and equivalent application threats.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-NFR-SEC-REQ009",
+    "type": "Non-functional",
+    "category": "Security",
+    "name": "Tamper-Proof Audit Logs",
+    "description": "Audit logs shall be protected from modification or deletion, including by system administrators.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-NFR-SEC-REQ010",
+    "type": "Non-functional",
+    "category": "Security",
+    "name": "Hardening Standards",
+    "description": "The solution shall apply recognized hardening standards such as CIS benchmarks or equivalent for infrastructure components.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-NFR-SEC-REQ011",
+    "type": "Non-functional",
+    "category": "Security",
+    "name": "Secure API Design",
+    "description": "APIs shall follow security best practices, including authentication, authorization, encryption, audit logging, quotas and throttling.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-NFR-SEC-REQ012",
+    "type": "Non-functional",
+    "category": "Security",
+    "name": "Supply Chain Security",
+    "description": "The vendor shall demonstrate controls to manage hardware, software, open-source, and third-party dependency security risks across the product lifecycle.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-NFR-SEC-REQ013",
+    "type": "Non-functional",
+    "category": "Security",
+    "name": "Incident Monitoring",
+    "description": "The system shall generate real-time alerts for failures, suspicious activities, and critical security events.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-NFR-SEC-REQ014",
+    "type": "Non-functional",
+    "category": "Privacy",
+    "name": "Consent Management",
+    "description": "Individuals consent shall be recorded and enforced for data sharing with external agencies, including scope, purpose, duration, and revocation.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-NFR-SEC-REQ015",
+    "type": "Non-functional",
+    "category": "Privacy",
+    "name": "Data Minimization and Masking",
+    "description": "The system shall apply data minimization, masking of sensitive information where appropriate, and anonymization of statistical exports.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-NFR-UX-REQ001",
+    "type": "Non-functional",
+    "category": "Usability & Accessibility",
+    "name": "Intuitive Interface",
+    "description": "The system interface shall be easy and intuitive for users with different levels of computer-use experience.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-NFR-UX-REQ002",
+    "type": "Non-functional",
+    "category": "Usability & Accessibility",
+    "name": "Consistent Navigation",
+    "description": "The interface shall provide consistent navigation, headings, menus, labels and controls across modules.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-NFR-UX-REQ003",
+    "type": "Non-functional",
+    "category": "Usability & Accessibility",
+    "name": "Contextual Help",
+    "description": "The system shall provide contextual help, tooltips, examples, and clear task-oriented guidance.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-NFR-UX-REQ004",
+    "type": "Non-functional",
+    "category": "Usability & Accessibility",
+    "name": "Clear Error Messages",
+    "description": "Error and warning messages shall be informative, user-friendly, and identify the issue as completely as possible.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-NFR-UX-REQ005",
+    "type": "Non-functional",
+    "category": "Usability & Accessibility",
+    "name": "Accessibility Standards",
+    "description": "The system shall conform to applicable accessibility standards, including screen-reader support, keyboard-only operation, sufficient color contrast, and adjustable font size.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-NFR-UX-REQ006",
+    "type": "Non-functional",
+    "category": "Localization",
+    "name": "Multi-Language Support",
+    "description": "The system shall provide multilingual support and enable easy language switching where applicable.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-NFR-UX-REQ007",
+    "type": "Non-functional",
+    "category": "Localization",
+    "name": "Local Formats and Structures",
+    "description": "The system shall support local languages, local calendar systems where applicable, local naming conventions, and local administrative structures.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-NFR-UX-REQ008",
+    "type": "Non-functional",
+    "category": "Usability & Accessibility",
+    "name": "Responsive Interface",
+    "description": "The user interface shall adapt to desktop, tablet, and mobile screen sizes.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-NFR-UX-REQ009",
+    "type": "Non-functional",
+    "category": "Usability & Accessibility",
+    "name": "User Learning Support",
+    "description": "The system shall support product-based training and learning materials to reduce reliance on in-person training.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-NFR-REL-REQ001",
+    "type": "Non-functional",
+    "category": "Reliability & Availability",
+    "name": "Annual Availability",
+    "description": "The system availability shall be \u2265 99.5% uptime annually, unless a stricter national service level applies.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-NFR-REL-REQ002",
+    "type": "Non-functional",
+    "category": "Reliability & Availability",
+    "name": "Critical Service Availability",
+    "description": "Critical services including registration, certificate issuance, and verification shall be available 24/7 where required by the service model.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-NFR-REL-REQ003",
+    "type": "Non-functional",
+    "category": "Reliability & Availability",
+    "name": "Maximum Downtime",
+    "description": "The system must not exceed 12 hours downtime per year.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-NFR-REL-REQ004",
+    "type": "Non-functional",
+    "category": "Reliability & Availability",
+    "name": "Online and Offline Operation",
+    "description": "The system must allow users to work online and offline, with synchronization when connectivity is restored.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-NFR-REL-REQ005",
+    "type": "Non-functional",
+    "category": "Reliability & Availability",
+    "name": "Automatic Failover",
+    "description": "The system shall support automatic failover within \u2264 5 minutes.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-NFR-REL-REQ006",
+    "type": "Non-functional",
+    "category": "Reliability & Availability",
+    "name": "Recovery Time Objective",
+    "description": "The system shall recover from failures within RTO \u2264 4 hours.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-NFR-REL-REQ007",
+    "type": "Non-functional",
+    "category": "Reliability & Availability",
+    "name": "Recovery Point Objective",
+    "description": "The system shall maintain RPO \u2264 24 hours.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-NFR-REL-REQ008",
+    "type": "Non-functional",
+    "category": "Reliability & Availability",
+    "name": "Transaction Integrity",
+    "description": "The system shall ensure no data loss during transactions through ACID-compliant database transactions and automatic retry for failed operations.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-NFR-REL-REQ009",
+    "type": "Non-functional",
+    "category": "Reliability & Availability",
+    "name": "Backup and Restore",
+    "description": "The system shall provide automated backup and restore functionality, including regular full and incremental backups.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-NFR-REL-REQ010",
+    "type": "Non-functional",
+    "category": "Reliability & Availability",
+    "name": "Offsite Disaster Recovery",
+    "description": "The system shall maintain offsite backup storage and a disaster recovery site in a separate geographic location.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-NFR-REL-REQ011",
+    "type": "Non-functional",
+    "category": "Reliability & Availability",
+    "name": "Backup Testing",
+    "description": "Backups and disaster recovery procedures shall be tested regularly and documented.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-NFR-SAFE-REQ001",
+    "type": "Non-functional",
+    "category": "Safety",
+    "name": "Read-Only Final Records",
+    "description": "Once finalized, civil registration records shall become read-only and may only be changed through authorized amendment processes with full audit trail.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-NFR-SAFE-REQ002",
+    "type": "Non-functional",
+    "category": "Safety",
+    "name": "Supervisor Approval for High-Risk Actions",
+    "description": "High-risk actions such as merges, reversals, certificate voiding, and access to sensitive events shall require supervisor approval or enhanced controls.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-NFR-SAFE-REQ003",
+    "type": "Non-functional",
+    "category": "Safety",
+    "name": "Protection of Minors and Sensitive Events",
+    "description": "Identity profiles for minors, foundling records, stillbirth/neonatal death events, and other sensitive events shall have additional privacy, access, and workflow protections.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-NFR-SAFE-REQ004",
+    "type": "Non-functional",
+    "category": "Safety",
+    "name": "Data Integrity Validation",
+    "description": "All data entered shall be validated against defined business rules and referential integrity constraints.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-NFR-SAFE-REQ005",
+    "type": "Non-functional",
+    "category": "Safety",
+    "name": "Duplicate Prevention Before Finalization",
+    "description": "Duplicate records shall be detected and prevented before finalization.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-NFR-SAFE-REQ006",
+    "type": "Non-functional",
+    "category": "Safety",
+    "name": "Chain of Custody",
+    "description": "The system shall maintain chain of custody for physical documents, certificates, and critical certificate stock movements.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-NFR-SAFE-REQ007",
+    "type": "Non-functional",
+    "category": "Safety",
+    "name": "Error Reversal Controls",
+    "description": "Erroneous actions shall be reversible only where legally permissible and with full audit trail and approval controls.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-NFR-COMP-REQ001",
+    "type": "Non-functional",
+    "category": "Compliance & Legal",
+    "name": "National Legal Compliance",
+    "description": "The system shall comply with national civil registration laws, data protection and privacy laws, national archives laws, and statistical reporting requirements.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-NFR-COMP-REQ002",
+    "type": "Non-functional",
+    "category": "Compliance & Legal",
+    "name": "Legal Validity of Electronic Records",
+    "description": "The system shall support legal validity and admissibility of electronic records, digital signatures, digital certificates, certified true copies, and audit trails where permitted by law.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-NFR-COMP-REQ003",
+    "type": "Non-functional",
+    "category": "Compliance & Legal",
+    "name": "International Standards Alignment",
+    "description": "The system shall support alignment with UN Legal Identity Agenda, SDG Target 16.9, WHO standards for live birth/stillbirth/cause of death, and relevant interoperability standards such as HL7 FHIR where applicable.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-NFR-COMP-REQ004",
+    "type": "Non-functional",
+    "category": "Compliance & Legal",
+    "name": "Records Retention",
+    "description": "Records shall be retained according to legal and archival requirements.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-NFR-COMP-REQ005",
+    "type": "Non-functional",
+    "category": "Compliance & Legal",
+    "name": "Statutory Deadlines",
+    "description": "Registration deadlines and late/delayed registration rules shall be enforceable through configured business rules.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-NFR-COMP-REQ006",
+    "type": "Non-functional",
+    "category": "Compliance & Legal",
+    "name": "Audit and Oversight Access",
+    "description": "Authorized auditors shall have read-only access to records and audit logs, with all auditor actions logged.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-NFR-COMP-REQ007",
+    "type": "Non-functional",
+    "category": "Compliance & Legal",
+    "name": "Regulatory Reporting",
+    "description": "The system shall generate regulatory reports in prescribed formats and frequencies.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-NFR-COMP-REQ008",
+    "type": "Non-functional",
+    "category": "Compliance & Legal",
+    "name": "Citizen Access Rights",
+    "description": "Citizens shall be able to access their own information as provided by law and subject to identity verification.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-NFR-QUAL-REQ001",
+    "type": "Non-functional",
+    "category": "Quality / Maintainability",
+    "name": "Modular Architecture",
+    "description": "The system shall follow modular architecture with clear separation of concerns.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-NFR-QUAL-REQ002",
+    "type": "Non-functional",
+    "category": "Quality / Maintainability",
+    "name": "Externalized Configuration",
+    "description": "Business rules and environment-specific settings shall be externalized and configurable without code changes where feasible.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-NFR-QUAL-REQ003",
+    "type": "Non-functional",
+    "category": "Quality / Maintainability",
+    "name": "Technical Documentation",
+    "description": "Comprehensive technical documentation shall be maintained and updated with system changes.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-NFR-QUAL-REQ004",
+    "type": "Non-functional",
+    "category": "Quality / Maintainability",
+    "name": "Version Control",
+    "description": "All code, configuration, and technical documentation shall be maintained in version control.",
+    "priority": "Must"
+  },
+  {
+    "id": "ACSA-NFR-QUAL-REQ005",
+    "type": "Non-functional",
+    "category": "Quality / Testability",
+    "name": "Automated Testing",
+    "description": "The system shall support automated unit, integration, performance, and non-functional testing, with test coverage metrics tracked against defined targets.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-NFR-QUAL-REQ006",
+    "type": "Non-functional",
+    "category": "Quality / Deployability",
+    "name": "CI/CD and Deployment Automation",
+    "description": "The system shall support automated CI/CD pipelines, environment-consistent deployment, health checks, rollback capability, and zero- or minimal-downtime deployment.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-NFR-QUAL-REQ007",
+    "type": "Non-functional",
+    "category": "Quality / Portability",
+    "name": "Deployment Portability",
+    "description": "The system shall support on-premises, cloud, and hybrid deployment, including containerization where appropriate and avoidance of vendor lock-in.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-NFR-QUAL-REQ008",
+    "type": "Non-functional",
+    "category": "Quality / Portability",
+    "name": "Device and Browser Support",
+    "description": "The system shall support major browsers and desktop, laptop, tablet, and smartphone devices.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-NFR-QUAL-REQ009",
+    "type": "Non-functional",
+    "category": "Quality / Interoperability",
+    "name": "Open Standards",
+    "description": "The system shall use open standards and standard data exchange formats, including APIs, JSON, XML, SDMX and other agreed formats.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-NFR-QUAL-REQ010",
+    "type": "Non-functional",
+    "category": "Quality / Interoperability",
+    "name": "Semantic Interoperability",
+    "description": "The system shall exchange data with other systems while ensuring semantic interoperability through standard code lists, metadata and mapping rules.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-NFR-QUAL-REQ011",
+    "type": "Non-functional",
+    "category": "Quality / Interoperability",
+    "name": "Integration Health",
+    "description": "Integration health shall be monitored with alerts, retry logic and escalation for persistent failures.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-NFR-QUAL-REQ012",
+    "type": "Non-functional",
+    "category": "Quality / Reusability",
+    "name": "Reusable Shared Services",
+    "description": "Common functionality shall be implemented as shared services and reusable components, with business rules documented centrally for reuse across modules.",
+    "priority": "Could"
+  },
+  {
+    "id": "ACSA-NFR-QUAL-REQ013",
+    "type": "Non-functional",
+    "category": "Quality / Error Handling",
+    "name": "Comprehensive Error Handling",
+    "description": "All written software shall be subject to a comprehensive error-handling regime; errors and warnings shall be written to system logs and critical errors escalated.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-NFR-QUAL-REQ014",
+    "type": "Non-functional",
+    "category": "Quality / Archiving",
+    "name": "Permanent Archiving",
+    "description": "The system shall archive all documents, including legacy birth and death records, according to retention and archival requirements.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-NFR-QUAL-REQ015",
+    "type": "Non-functional",
+    "category": "Quality / Monitoring & Observability",
+    "name": "Monitoring Dashboard",
+    "description": "The system shall provide real-time monitoring dashboards, performance monitoring, usage analytics, and alerts for failures or suspicious activities.",
+    "priority": "Should"
+  },
+  {
+    "id": "ACSA-NFR-QUAL-REQ016",
+    "type": "Non-functional",
+    "category": "Quality / Operations",
+    "name": "Incident and DR Testing",
+    "description": "The system shall support documented incident response procedures, regular vulnerability scans, penetration testing, and annual testing of incident response and disaster recovery procedures.",
+    "priority": "Should"
+  }
+]
