@@ -3,3 +3,6 @@ dist/
 .env
 .next/
 *.tsbuildinfo
+
+# Local Netlify folder
+.netlify

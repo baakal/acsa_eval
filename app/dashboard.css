@@ -130,3 +130,103 @@
   .analyticsStamp { text-align: left; margin-top: 14px; }
   .homeSectionTitle > button { margin-top: 12px; padding: 0; }
 }
+
+/* App-wide readability scale for everyday users */
+body { font-size: 16px; line-height: 1.58; }
+button, input, select, textarea { font-size: 15px; }
+
+.eyebrow { font-size: 12px; }
+.requirementsContent header { height: 98px; }
+.assessmentBrand { font-size: 18px; }
+.assessmentBrand strong { font-size: 14px; }
+.assessmentBrand small { font-size: 12px; }
+
+.viewSwitcher button { font-size: 14px; padding: 10px 14px; }
+.accountAvatar { width: 38px; height: 38px; font-size: 12px; }
+.accountMenu .logout { font-size: 13px; }
+
+.navHead h2 { font-size: 16px; }
+.searchBox input { font-size: 13px; padding-top: 10px; padding-bottom: 10px; }
+.filterChips button { font-size: 12px; padding: 7px 12px; }
+.catHead .label { font-size: 13px; }
+.catHead .count { font-size: 10px; }
+.reqRow .name { font-size: 12px; }
+.navNoResults { font-size: 12px; }
+.navFoot { font-size: 12px; }
+
+.navCrumb { font-size: 13px; }
+.categoryStatusChip { font-size: 10px; }
+.submitCategoryBtn { font-size: 13px; padding: 10px 16px; }
+.navArrows button { width: 32px; height: 32px; font-size: 14px; }
+
+.qHeadRow h1 { font-size: 24px; }
+.reqId { font-size: 11px; }
+.quickField legend { font-size: 15px; }
+.quickField legend small { font-size: 11px; }
+.pill { font-size: 13px; padding: 10px 13px; }
+.pill kbd { font-size: 9px; }
+.pill .score { font-size: 9px; }
+.dependsWrap small { font-size: 11px; }
+.dependsWrap textarea { font-size: 13px; }
+.tabBar button { font-size: 13px; }
+.tabBar button .badge { font-size: 10px; }
+.systemsField > span { font-size: 15px; }
+.systemsField > small { font-size: 12px; }
+.systemsField textarea { font-size: 14px; }
+.reviewLocked { font-size: 13px; }
+.reviewChoice button { font-size: 13px; }
+.reviewCard label { font-size: 13px; }
+.reviewCard textarea { font-size: 14px; }
+.commentList > p { font-size: 13px; }
+.commentList article b { font-size: 14px; }
+.commentList article small { font-size: 11px; }
+.commentList article p { font-size: 14px; }
+.commentComposer textarea { font-size: 14px; }
+.commentComposer button { font-size: 13px; padding: 10px 14px; }
+.canvasFoot > span { font-size: 12px; }
+.canvasFoot .previous, .footBtns .jumpIncomplete, .footBtns .nextQuestion { font-size: 12px; }
+
+.homeHero > div > p { font-size: 16px; }
+.homeActions button { font-size: 14px; }
+.homeProgress > span { font-size: 11px; }
+.homeProgress p { font-size: 13px; }
+.homeStats span { font-size: 13px; }
+.homeStats small { font-size: 12px; }
+.homeSectionTitle p { font-size: 14px; }
+.homeSectionTitle > button { font-size: 14px; }
+.guideSteps b { font-size: 15px; }
+.guideSteps p { font-size: 13px; }
+.homeCategories button b { font-size: 15px; }
+.homeCategories button small { font-size: 11px; }
+.homeCategories button strong { font-size: 13px; }
+
+.analyticsHero p { font-size: 15px; }
+.analyticsStamp b { font-size: 15px; }
+.analyticsStamp span { font-size: 12px; }
+.metricGrid article > span { font-size: 12px; }
+.metricGrid p { font-size: 12px; }
+.analyticsTitle p { font-size: 13px; }
+.excelAnalytics table { font-size: 13px; }
+.excelAnalytics th { font-size: 12px; }
+.excelAnalytics td { font-size: 13px; }
+
+.authIntro p { font-size: 16px; }
+.authIntro > small { font-size: 12px; }
+.authBox > p { font-size: 14px; }
+.authBox form label { font-size: 12px; }
+.authBox form input { font-size: 14px; padding: 13px; }
+.rolePicker b { font-size: 13px; }
+.rolePicker small { font-size: 11px; }
+.authSubmit { font-size: 13px; }
+.authError { font-size: 12px; }
+.authSwitch { font-size: 12px; }
+
+@media (max-width: 850px) {
+  body { font-size: 15px; }
+  button, input, select, textarea { font-size: 14px; }
+  .requirementsContent header { height: 90px; }
+  .homeHero > div > p, .analyticsHero p { font-size: 14px; }
+  .excelAnalytics table { font-size: 12px; }
+  .excelAnalytics th { font-size: 11px; }
+  .excelAnalytics td { font-size: 12px; }
+}

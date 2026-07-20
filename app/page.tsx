@@ -430,6 +430,7 @@ export default function Home() {
               </div>
 
               <div className="questionBody">
+                <div className="reqQuote"><span>Requirement</span><p>{selectedRequirement.description}</p></div>
                 <div className="qHeadRow">
                   <h1>{selectedRequirement.name}</h1>
                   <div className="tagRow">
@@ -438,7 +439,6 @@ export default function Home() {
                   </div>
                 </div>
                 <p className="reqId">{selectedRequirement.id}</p>
-                <div className="reqQuote"><span>Requirement</span><p>{selectedRequirement.description}</p></div>
 
                 <div className="quickStrip">
                   <fieldset className="quickField">
