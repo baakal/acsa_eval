@@ -1,0 +1,132 @@
+/* Primary workspace navigation */
+.requirementsContent header { display: grid; grid-template-columns: minmax(360px, 1fr) auto minmax(320px, 1fr); align-items: center; gap: 24px; margin: 0; padding: 0 30px; }
+.assessmentBrand { min-width: 0; }
+.assessmentBrand > span:nth-child(2) { white-space: nowrap; }
+.viewSwitcher { display: flex; gap: 3px; padding: 4px; background: #edf2f6; border-radius: 7px; }
+.viewSwitcher button { border: 0; background: transparent; color: #637789; border-radius: 5px; padding: 8px 12px; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+.viewSwitcher button > span { font-size: 15px; line-height: 1; }
+.viewSwitcher button.active { background: #fff; color: #075faa; box-shadow: 0 1px 4px rgba(24, 52, 75, .12); }
+.headerActions { justify-content: flex-end; min-width: 0; }
+.accountMenu { display: flex; align-items: center; gap: 9px; min-width: 0; padding-left: 14px; border-left: 1px solid var(--line); }
+.accountAvatar { width: 34px; height: 34px; flex: 0 0 auto; display: grid; place-items: center; border-radius: 50%; background: #dcecf8; color: #12649d; font-size: 10px; font-weight: 800; }
+.accountBadge { min-width: 0; }
+.accountBadge b, .accountBadge small { display: block; max-width: 170px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.accountMenu .logout { border: 0; background: transparent; color: #8a5960; padding: 8px; font-size: 11px; font-weight: 700; white-space: nowrap; cursor: pointer; }
+
+/* Home */
+.homePage, .analyticsPage { height: calc(100vh - 90px); overflow-y: auto; background: #f5f7f9; padding: 42px clamp(30px, 5vw, 72px) 70px; }
+.homePage > *, .analyticsPage > * { width: min(100%, 1440px); margin-left: auto; margin-right: auto; }
+.homePage { display: grid; gap: 26px; }
+.homeHero { position: relative; overflow: hidden; display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(280px, .6fr); gap: 45px; align-items: center; background: #12334f; color: #fff; border-radius: 12px; padding: 44px 48px; }
+.homeHero::after { content: ''; position: absolute; width: 360px; height: 360px; right: -180px; top: -210px; border: 65px solid rgba(71, 145, 204, .14); border-radius: 50%; }
+.homeHero .eyebrow { color: #89c2f0; }
+.homeHero h1 { color: #fff; font-size: 43px; margin: 10px 0 12px; }
+.homeHero > div > p { color: #c4d2dd; max-width: 720px; font-size: 14px; line-height: 1.75; margin: 0; }
+.homeActions { display: flex; gap: 10px; margin-top: 25px; }
+.homeActions button { border: 1px solid rgba(255, 255, 255, .35); background: transparent; color: #fff; border-radius: 6px; padding: 11px 15px; font-size: 12px; font-weight: 800; cursor: pointer; }
+.homeActions button:first-child { border-color: #1783df; background: #0872cf; }
+.homeActions button span { padding-left: 13px; }
+.homeProgress { position: relative; z-index: 1; border-left: 1px solid rgba(255, 255, 255, .2); padding-left: 38px; }
+.homeProgress > span { color: #9bb4c7; font-size: 10px; font-weight: 800; letter-spacing: 1px; }
+.homeProgress strong { display: block; font: 700 44px 'Playfair Display'; margin-top: 8px; }
+.homeProgress p { color: #b8c9d6; font-size: 11px; }
+.homeProgress > div { height: 7px; background: rgba(255,255,255,.16); border-radius: 8px; overflow: hidden; }
+.homeProgress i { display: block; height: 100%; background: #3da0ef; border-radius: 8px; }
+.homeStats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.homeStats article { background: #fff; border: 1px solid var(--line); border-radius: 9px; padding: 19px 21px; }
+.homeStats span, .homeStats small { display: block; }
+.homeStats span { color: #6d7f8f; font-size: 11px; font-weight: 700; }
+.homeStats strong { display: block; font: 700 29px 'Playfair Display'; color: var(--ink); margin: 7px 0 2px; }
+.homeStats small { color: #8795a2; font-size: 10px; }
+.startGuide, .homeCategories { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 28px 30px; }
+.homeSectionTitle { display: flex; justify-content: space-between; align-items: end; gap: 25px; margin-bottom: 22px; }
+.homeSectionTitle h2 { font-size: 24px; }
+.homeSectionTitle p { color: var(--muted); font-size: 12px; margin: 4px 0 0; }
+.homeSectionTitle > button { border: 0; background: transparent; color: var(--blue); font-size: 12px; font-weight: 800; cursor: pointer; }
+.guideSteps { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line); }
+.guideSteps article { display: grid; grid-template-columns: 29px 1fr; gap: 11px; padding: 22px 22px 4px 0; }
+.guideSteps article + article { border-left: 1px solid var(--line); padding-left: 22px; }
+.guideSteps article > span { width: 27px; height: 27px; display: grid; place-items: center; border-radius: 50%; background: #e5f1fb; color: #0869ba; font-size: 11px; font-weight: 800; }
+.guideSteps b { font-size: 13px; }
+.guideSteps p { color: var(--muted); font-size: 11px; line-height: 1.55; margin: 5px 0 0; }
+.homeCategories > div:last-child { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--line); }
+.homeCategories > div:last-child > button { border: 0; border-bottom: 1px solid var(--line); background: #fff; padding: 15px 8px; display: flex; justify-content: space-between; align-items: center; text-align: left; cursor: pointer; }
+.homeCategories > div:last-child > button:nth-child(odd) { padding-right: 22px; }
+.homeCategories > div:last-child > button:nth-child(even) { border-left: 1px solid var(--line); padding-left: 22px; }
+.homeCategories button b, .homeCategories button small { display: block; }
+.homeCategories button b { color: var(--ink); font-size: 13px; }
+.homeCategories button small { color: #718496; font-size: 9px; margin-top: 3px; text-transform: uppercase; }
+.homeCategories button strong { color: #4c687e; font-size: 11px; }
+.homeCategories button i { color: var(--blue); font-size: 17px; font-style: normal; margin-left: 14px; }
+
+/* Analytics */
+.analyticsPage { display: grid; gap: 22px; }
+.analyticsHero { display: flex; align-items: end; justify-content: space-between; gap: 30px; }
+.analyticsHero h1 { font-size: 38px; margin: 7px 0 5px; }
+.analyticsHero p { color: var(--muted); font-size: 13px; margin: 0; }
+.analyticsStamp { display: grid; gap: 2px; text-align: right; }
+.analyticsStamp b { font-size: 13px; }
+.analyticsStamp span { color: var(--muted); font-size: 10px; }
+.metricGrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.metricGrid article { background: #fff; border: 1px solid var(--line); border-radius: 9px; padding: 20px; }
+.metricGrid article > span { color: #748695; font-size: 10px; font-weight: 800; letter-spacing: .7px; }
+.metricGrid strong { display: block; font: 700 31px 'Playfair Display'; margin: 8px 0 2px; }
+.metricGrid p { color: var(--muted); font-size: 10px; min-height: 30px; margin: 0; }
+.metricTrack { height: 5px; background: #e7edf1; border-radius: 5px; overflow: hidden; }
+.metricTrack i { display: block; height: 100%; background: #2f8bd7; }
+.metricTrack.score i { background: #35a078; }
+.excelAnalytics { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 25px; }
+.analyticsTitle { display: flex; justify-content: space-between; align-items: end; margin-bottom: 17px; }
+.analyticsTitle h2 { font-size: 22px; margin-top: 4px; }
+.analyticsTitle p { color: var(--muted); font-size: 11px; margin: 3px 0 0; }
+.tableScroll { overflow-x: auto; border: 1px solid #dfe6eb; border-radius: 7px; }
+.excelAnalytics table { width: 100%; min-width: 920px; border-collapse: collapse; font-size: 11px; }
+.excelAnalytics th { background: #eaf1f7; color: #36556d; padding: 11px 12px; text-align: right; font-size: 10px; border-bottom: 1px solid #cedbe4; }
+.excelAnalytics th:first-child, .excelAnalytics th:nth-child(2) { text-align: left; }
+.excelAnalytics td { padding: 10px 12px; text-align: right; border-bottom: 1px solid #e8edf1; color: #536b7e; }
+.excelAnalytics td:first-child, .excelAnalytics td:nth-child(2) { text-align: left; }
+.excelAnalytics td:first-child { color: var(--ink); font-weight: 700; }
+.excelAnalytics tr:last-child td { border-bottom: 0; }
+.excelAnalytics .achievedRow td { background: #f4faf7; }
+.excelAnalytics .percentRow td { background: #f8fafb; color: #6c7f8e; }
+.excelAnalytics td b { color: #176e52; }
+
+@media (max-width: 1320px) {
+  .requirementsContent header { grid-template-columns: minmax(290px, 1fr) auto minmax(190px, 1fr); gap: 15px; padding: 0 20px; }
+  .assessmentBrand .scoreSummary, .accountBadge { display: none; }
+  .accountMenu { padding-left: 8px; }
+}
+
+@media (max-width: 1100px) {
+  .homeHero { grid-template-columns: 1fr; }
+  .homeProgress { border-left: 0; border-top: 1px solid rgba(255,255,255,.2); padding: 22px 0 0; }
+  .homeStats, .metricGrid, .guideSteps { grid-template-columns: 1fr 1fr; }
+  .guideSteps article:nth-child(3) { border-left: 0; }
+}
+
+@media (max-width: 980px) {
+  .requirementsContent header { grid-template-columns: 1fr auto; }
+  .viewSwitcher { position: fixed; z-index: 30; left: 50%; bottom: 14px; transform: translateX(-50%); box-shadow: 0 7px 24px rgba(15, 38, 57, .25); }
+  .homePage, .analyticsPage { padding-bottom: 100px; }
+}
+
+@media (max-width: 850px) {
+  .homePage, .analyticsPage { height: auto; padding: 26px 20px 50px; }
+  .requirementsContent header { grid-template-columns: 1fr auto; padding: 0 14px; }
+  .assessmentBrand > i, .assessmentBrand > div, .assessmentBrand > span:nth-child(2) { display: none; }
+  .autosavePill { display: none; }
+  .accountMenu { border-left: 0; }
+  .accountMenu .logout { font-size: 0; width: 34px; height: 34px; border-radius: 50%; background: #f5e9e9; }
+  .accountMenu .logout::after { content: '↗'; font-size: 16px; color: #8a5960; }
+  .viewSwitcher { left: 12px; right: 12px; bottom: 12px; transform: none; justify-content: space-around; }
+  .viewSwitcher button { flex: 1; justify-content: center; }
+  .homePage, .analyticsPage { padding-bottom: 100px; }
+  .homeHero { padding: 31px 25px; }
+  .homeHero h1 { font-size: 34px; }
+  .homeStats, .metricGrid, .guideSteps, .homeCategories > div:last-child { grid-template-columns: 1fr; }
+  .guideSteps article + article, .homeCategories > div:last-child > button:nth-child(even) { border-left: 0; padding-left: 0; }
+  .homeCategories > div:last-child > button { padding: 15px 0 !important; }
+  .analyticsHero, .homeSectionTitle { display: block; }
+  .analyticsStamp { text-align: left; margin-top: 14px; }
+  .homeSectionTitle > button { margin-top: 12px; padding: 0; }
+}

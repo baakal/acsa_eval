@@ -1,0 +1,74 @@
+/* Authentication */
+.appLoading { min-height: 100vh; display: flex; align-items: center; justify-content: center; gap: 12px; background: #f7f9fb; color: var(--ink); }
+.appLoading > div { display: grid; gap: 2px; }
+.appLoading b { font-size: 15px; }
+.appLoading small { color: var(--muted); font-size: 11px; }
+.authPage { min-height: 100vh; display: grid; grid-template-columns: minmax(360px, .9fr) minmax(480px, 1.1fr); background: #fff; }
+.authIntro { background: #102f4a; color: #fff; padding: 48px clamp(42px, 7vw, 100px); display: flex; flex-direction: column; justify-content: space-between; }
+.authBrand { padding: 0; }
+.authIntro .eyebrow { color: #8fc3ef; }
+.authIntro h1 { max-width: 530px; font-size: clamp(34px, 4vw, 54px); line-height: 1.08; margin: 15px 0 22px; }
+.authIntro p { color: #b6c8d7; max-width: 500px; line-height: 1.8; font-size: 13px; }
+.authIntro > small { color: #91aabd; font-size: 10px; }
+.authPanel { display: grid; place-items: center; padding: 45px; }
+.authBox { width: min(100%, 440px); }
+.authBox h2 { font-size: 30px; margin-top: 8px; }
+.authBox > p { color: var(--muted); font-size: 11px; margin: 0 0 24px; }
+.authBox form { display: grid; gap: 14px; }
+.authBox form label { color: #425a6e; font-size: 10px; font-weight: 800; }
+.authBox form input { display: block; width: 100%; border: 1px solid #d8e1e8; border-radius: 6px; padding: 11px 12px; margin-top: 6px; outline: 0; font: 12px Manrope; }
+.authBox form input:focus { border-color: var(--blue); box-shadow: 0 0 0 2px #e1effb; }
+.rolePicker { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+.rolePicker button { border: 1px solid #dce3e9; background: #fff; border-radius: 7px; padding: 14px; text-align: left; cursor: pointer; }
+.rolePicker button.selected { border-color: var(--blue); background: #f0f7fd; box-shadow: 0 0 0 1px var(--blue); }
+.rolePicker b, .rolePicker small { display: block; }
+.rolePicker b { font-size: 11px; color: var(--ink); }
+.rolePicker small { color: var(--muted); font-size: 8px; margin-top: 4px; }
+.authSubmit { border: 0; border-radius: 6px; background: var(--blue); color: #fff; padding: 12px; font: 700 11px Manrope; cursor: pointer; margin-top: 4px; }
+.authSubmit:disabled { opacity: .55; }
+.authError { background: #fff0ed; color: #9a3e2d; border-radius: 5px; padding: 9px 11px; font-size: 10px; }
+.authSwitch { display: block; border: 0; background: transparent; color: var(--blue); font: 700 10px Manrope; margin: 18px auto 0; cursor: pointer; }
+
+/* Account and category workflow */
+.accountBadge { text-align: right; display: grid; gap: 1px; }
+.accountBadge b { font-size: 10px; }
+.accountBadge small { color: var(--muted); font-size: 8px; }
+.headerActions .logout { color: #8a5960; }
+
+/* Document evidence */
+.documentEvidence { border: 1px dashed #cbd8e2; background: #f8fafc; border-radius: 7px; padding: 16px; margin: -18px 0 28px; }
+.documentEvidence > div:first-child b, .documentEvidence > div:first-child small { display: block; }
+.documentEvidence > div:first-child b { font-size: 11px; }
+.documentEvidence > div:first-child small { color: var(--muted); font-size: 9px; margin-top: 3px; }
+.uploadButton { display: inline-block; background: #e4f0fa; color: #0968b8; border-radius: 5px; padding: 8px 11px; margin-top: 12px; font-size: 9px; font-weight: 800; cursor: pointer; }
+.uploadButton input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.attachmentList { display: grid; gap: 7px; margin-top: 13px; }
+.attachmentList > div { display: grid; grid-template-columns: 24px 1fr 24px; align-items: center; gap: 8px; background: #fff; border: 1px solid #e0e7ec; border-radius: 5px; padding: 9px; }
+.attachmentList > div > span { color: #2675b5; font-size: 16px; }
+.attachmentList a { color: var(--ink); text-decoration: none; min-width: 0; }
+.attachmentList a b, .attachmentList a small { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.attachmentList a b { font-size: 9px; }
+.attachmentList a small { color: var(--muted); font-size: 8px; margin-top: 2px; }
+.attachmentList button { border: 0; background: transparent; color: #a65757; font-size: 17px; cursor: pointer; }
+
+/* Review and discussion */
+.reviewLocked { background: #fff6e6; color: #866624; border-radius: 5px; padding: 9px 11px; margin-bottom: 12px; font-size: 9px; }
+.commentComposer textarea { display: block; width: 100%; border: 1px solid #d7e0e7; border-radius: 6px; padding: 11px; margin-top: 7px; resize: vertical; font: 10px/1.6 Manrope; outline: 0; }
+.commentList { display: grid; gap: 13px; }
+.commentList > p { color: var(--muted); font-size: 10px; background: #f7f9fa; padding: 15px; border-radius: 6px; }
+.commentList article { display: grid; grid-template-columns: 32px 1fr; gap: 10px; }
+.commentAvatar { width: 30px; height: 30px; border-radius: 50%; background: #dcecf8; color: #16679f; display: grid; place-items: center; font-size: 8px; font-weight: 800; }
+.commentList article b { font-size: 10px; }
+.commentList article b em { color: #58748a; background: #edf3f7; border-radius: 9px; padding: 2px 6px; margin-left: 6px; font-size: 7px; font-style: normal; }
+.commentList article small { display: block; color: #919da7; font-size: 7px; margin-top: 2px; }
+.commentList article p { margin: 6px 0 0; font-size: 10px; line-height: 1.55; color: #40576a; }
+.commentComposer { margin-top: 18px; }
+.commentComposer button { display: block; margin: 8px 0 0 auto; border: 0; border-radius: 5px; background: var(--blue); color: #fff; padding: 8px 12px; font: 700 9px Manrope; cursor: pointer; }
+.commentComposer button:disabled { opacity: .4; cursor: not-allowed; }
+
+@media (max-width: 850px) {
+  .authPage { grid-template-columns: 1fr; }
+  .authIntro { min-height: 310px; padding: 32px; }
+  .authPanel { padding: 36px 24px; }
+  .accountBadge { display: none; }
+}

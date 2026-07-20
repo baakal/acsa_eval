@@ -1,0 +1,60 @@
+/* Readability and accessible type scale */
+body { font-size: 15px; line-height: 1.5; }
+button, input, select, textarea { font-family: Manrope, Arial, sans-serif; }
+.eyebrow { font-size: 11px; line-height: 1.4; }
+
+/* Application header */
+.requirementsContent header { height: 90px; }
+.assessmentBrand { font-size: 17px; }
+.assessmentBrand .mark { width: 36px; height: 36px; font-size: 24px; }
+.assessmentBrand strong { font-size: 14px; }
+.assessmentBrand small { font-size: 11px; }
+.assessmentBrand .scoreSummary strong { font-size: 18px; }
+.accountBadge b { font-size: 13px; }
+.accountBadge small { font-size: 10px; }
+
+/* Requirement question and answer controls */
+.questionPane { padding-top: 45px; }
+.systemsField > span { font-size: 14px; }
+.systemsField > span em { font-size: 10px; }
+.systemsField textarea { font-size: 13px; line-height: 1.6; padding: 14px; }
+
+/* Evidence, review, and discussion */
+.documentEvidence { padding: 18px; }
+.documentEvidence > div:first-child b { font-size: 14px; }
+.documentEvidence > div:first-child small { font-size: 11px; line-height: 1.5; }
+.uploadButton { font-size: 12px; padding: 10px 13px; }
+.attachmentList a b { font-size: 12px; }
+.attachmentList a small { font-size: 10px; }
+.commentComposer textarea { font-size: 13px; padding: 13px; }
+.reviewLocked { font-size: 12px; }
+.commentList > p { font-size: 12px; }
+.commentAvatar { width: 36px; height: 36px; font-size: 10px; }
+.commentList article { grid-template-columns: 38px 1fr; }
+.commentList article b { font-size: 13px; }
+.commentList article b em { font-size: 9px; }
+.commentList article small { font-size: 10px; }
+.commentList article p { font-size: 13px; line-height: 1.6; }
+.commentComposer button { font-size: 12px; padding: 10px 14px; }
+
+/* Authentication */
+.authIntro p { font-size: 15px; }
+.authIntro > small { font-size: 12px; }
+.authBox h2 { font-size: 34px; }
+.authBox > p { font-size: 13px; }
+.authBox form label { font-size: 13px; }
+.authBox form input { font-size: 14px; padding: 13px; }
+.rolePicker b { font-size: 14px; }
+.rolePicker small { font-size: 11px; line-height: 1.4; }
+.authSubmit { font-size: 13px; padding: 13px; }
+.authSwitch, .authError { font-size: 12px; }
+
+@media (max-width: 1250px) {
+  .questionPane { padding-left: 32px; padding-right: 32px; }
+  .accountBadge { display: none; }
+}
+
+@media (max-width: 850px) {
+  .requirementsContent header { height: 84px; }
+  .assessmentBrand .scoreSummary { display: none; }
+}
