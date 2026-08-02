@@ -36,34 +36,34 @@
 .headerActions .logout { color: #8a5960; }
 
 /* Document evidence */
-.documentEvidence { border: 1px dashed #cbd8e2; background: #f8fafc; border-radius: 7px; padding: 16px; margin: -18px 0 28px; }
+.documentEvidence { border: 1px dashed #cbd8e2; background: #f8fafc; border-radius: 8px; padding: 18px; margin: 0 0 28px; }
 .documentEvidence > div:first-child b, .documentEvidence > div:first-child small { display: block; }
-.documentEvidence > div:first-child b { font-size: 11px; }
-.documentEvidence > div:first-child small { color: var(--muted); font-size: 9px; margin-top: 3px; }
-.uploadButton { display: inline-block; background: #e4f0fa; color: #0968b8; border-radius: 5px; padding: 8px 11px; margin-top: 12px; font-size: 9px; font-weight: 800; cursor: pointer; }
+.documentEvidence > div:first-child b { font-size: 14px; font-weight: 800; }
+.documentEvidence > div:first-child small { color: var(--muted); font-size: 12px; margin-top: 4px; }
+.uploadButton { display: inline-block; background: #e4f0fa; color: #0968b8; border-radius: 6px; padding: 10px 14px; margin-top: 14px; font-size: 13px; font-weight: 800; cursor: pointer; }
 .uploadButton input { position: absolute; width: 1px; height: 1px; opacity: 0; }
-.attachmentList { display: grid; gap: 7px; margin-top: 13px; }
-.attachmentList > div { display: grid; grid-template-columns: 24px 1fr 24px; align-items: center; gap: 8px; background: #fff; border: 1px solid #e0e7ec; border-radius: 5px; padding: 9px; }
-.attachmentList > div > span { color: #2675b5; font-size: 16px; }
+.attachmentList { display: grid; gap: 8px; margin-top: 14px; }
+.attachmentList > div { display: grid; grid-template-columns: 28px 1fr 28px; align-items: center; gap: 10px; background: #fff; border: 1px solid #e0e7ec; border-radius: 6px; padding: 10px 12px; }
+.attachmentList > div > span { color: #2675b5; font-size: 18px; }
 .attachmentList a { color: var(--ink); text-decoration: none; min-width: 0; }
 .attachmentList a b, .attachmentList a small { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.attachmentList a b { font-size: 9px; }
-.attachmentList a small { color: var(--muted); font-size: 8px; margin-top: 2px; }
-.attachmentList button { border: 0; background: transparent; color: #a65757; font-size: 17px; cursor: pointer; }
+.attachmentList a b { font-size: 13px; }
+.attachmentList a small { color: var(--muted); font-size: 11px; margin-top: 3px; }
+.attachmentList button { border: 0; background: transparent; color: #a65757; font-size: 20px; cursor: pointer; }
 
 /* Review and discussion */
-.reviewLocked { background: #fff6e6; color: #866624; border-radius: 5px; padding: 9px 11px; margin-bottom: 12px; font-size: 9px; }
-.commentComposer textarea { display: block; width: 100%; border: 1px solid #d7e0e7; border-radius: 6px; padding: 11px; margin-top: 7px; resize: vertical; font: 10px/1.6 Manrope; outline: 0; }
-.commentList { display: grid; gap: 13px; }
-.commentList > p { color: var(--muted); font-size: 10px; background: #f7f9fa; padding: 15px; border-radius: 6px; }
-.commentList article { display: grid; grid-template-columns: 32px 1fr; gap: 10px; }
-.commentAvatar { width: 30px; height: 30px; border-radius: 50%; background: #dcecf8; color: #16679f; display: grid; place-items: center; font-size: 8px; font-weight: 800; }
-.commentList article b { font-size: 10px; }
-.commentList article b em { color: #58748a; background: #edf3f7; border-radius: 9px; padding: 2px 6px; margin-left: 6px; font-size: 7px; font-style: normal; }
-.commentList article small { display: block; color: #919da7; font-size: 7px; margin-top: 2px; }
-.commentList article p { margin: 6px 0 0; font-size: 10px; line-height: 1.55; color: #40576a; }
-.commentComposer { margin-top: 18px; }
-.commentComposer button { display: block; margin: 8px 0 0 auto; border: 0; border-radius: 5px; background: var(--blue); color: #fff; padding: 8px 12px; font: 700 9px Manrope; cursor: pointer; }
+.reviewLocked { background: #fff6e6; color: #866624; border-radius: 6px; padding: 12px 14px; margin-bottom: 16px; font-size: 13px; line-height: 1.6; }
+.commentComposer textarea { display: block; width: 100%; border: 1px solid #d7e0e7; border-radius: 6px; padding: 13px; margin-top: 8px; resize: vertical; font: 14px/1.6 Manrope; outline: 0; }
+.commentList { display: grid; gap: 16px; }
+.commentList > p { color: var(--muted); font-size: 13px; background: #f7f9fa; padding: 18px; border-radius: 6px; }
+.commentList article { display: grid; grid-template-columns: 40px 1fr; gap: 12px; }
+.commentAvatar { width: 38px; height: 38px; border-radius: 50%; background: #dcecf8; color: #16679f; display: grid; place-items: center; font-size: 11px; font-weight: 800; }
+.commentList article b { font-size: 14px; }
+.commentList article b em { color: #58748a; background: #edf3f7; border-radius: 9px; padding: 2px 7px; margin-left: 7px; font-size: 10px; font-style: normal; }
+.commentList article small { display: block; color: #919da7; font-size: 11px; margin-top: 3px; }
+.commentList article p { margin: 7px 0 0; font-size: 14px; line-height: 1.6; color: #40576a; }
+.commentComposer { margin-top: 20px; }
+.commentComposer button { display: block; margin: 10px 0 0 auto; border: 0; border-radius: 6px; background: var(--blue); color: #fff; padding: 10px 16px; font: 700 13px Manrope; cursor: pointer; }
 .commentComposer button:disabled { opacity: .4; cursor: not-allowed; }
 
 @media (max-width: 850px) {

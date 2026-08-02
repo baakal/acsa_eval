@@ -132,11 +132,15 @@
 }
 
 /* App-wide readability scale for everyday users */
+:root { --app-header-height: 98px; }
 body { font-size: 16px; line-height: 1.58; }
 button, input, select, textarea { font-size: 15px; }
 
 .eyebrow { font-size: 12px; }
-.requirementsContent header { height: 98px; }
+.requirementsContent { height: 100dvh; }
+.requirementsContent header { height: var(--app-header-height); }
+.assessment { height: calc(100dvh - var(--app-header-height)); min-height: 0; }
+.homePage, .analyticsPage { height: calc(100dvh - var(--app-header-height)); }
 .assessmentBrand { font-size: 18px; }
 .assessmentBrand strong { font-size: 14px; }
 .assessmentBrand small { font-size: 12px; }
@@ -222,9 +226,11 @@ button, input, select, textarea { font-size: 15px; }
 .authSwitch { font-size: 12px; }
 
 @media (max-width: 850px) {
+  :root { --app-header-height: 90px; }
   body { font-size: 15px; }
   button, input, select, textarea { font-size: 14px; }
-  .requirementsContent header { height: 90px; }
+  .requirementsContent header { height: var(--app-header-height); }
+  .homePage, .analyticsPage { height: auto; }
   .homeHero > div > p, .analyticsHero p { font-size: 14px; }
   .excelAnalytics table { font-size: 12px; }
   .excelAnalytics th { font-size: 11px; }

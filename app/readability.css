@@ -16,26 +16,26 @@ button, input, select, textarea { font-family: Manrope, Arial, sans-serif; }
 /* Requirement question and answer controls */
 .questionPane { padding-top: 45px; }
 .systemsField > span { font-size: 14px; }
-.systemsField > span em { font-size: 10px; }
-.systemsField textarea { font-size: 13px; line-height: 1.6; padding: 14px; }
+.systemsField > span em { font-size: 11px; }
+.systemsField textarea { font-size: 14px; line-height: 1.6; padding: 14px; }
 
 /* Evidence, review, and discussion */
-.documentEvidence { padding: 18px; }
+.documentEvidence { padding: 20px; margin-bottom: 28px; }
 .documentEvidence > div:first-child b { font-size: 14px; }
-.documentEvidence > div:first-child small { font-size: 11px; line-height: 1.5; }
-.uploadButton { font-size: 12px; padding: 10px 13px; }
-.attachmentList a b { font-size: 12px; }
-.attachmentList a small { font-size: 10px; }
-.commentComposer textarea { font-size: 13px; padding: 13px; }
-.reviewLocked { font-size: 12px; }
-.commentList > p { font-size: 12px; }
-.commentAvatar { width: 36px; height: 36px; font-size: 10px; }
-.commentList article { grid-template-columns: 38px 1fr; }
-.commentList article b { font-size: 13px; }
-.commentList article b em { font-size: 9px; }
-.commentList article small { font-size: 10px; }
-.commentList article p { font-size: 13px; line-height: 1.6; }
-.commentComposer button { font-size: 12px; padding: 10px 14px; }
+.documentEvidence > div:first-child small { font-size: 12px; line-height: 1.5; }
+.uploadButton { font-size: 13px; padding: 10px 14px; }
+.attachmentList a b { font-size: 13px; }
+.attachmentList a small { font-size: 11px; }
+.commentComposer textarea { font-size: 14px; padding: 13px; }
+.reviewLocked { font-size: 13px; }
+.commentList > p { font-size: 13px; }
+.commentAvatar { width: 38px; height: 38px; font-size: 11px; }
+.commentList article { grid-template-columns: 42px 1fr; }
+.commentList article b { font-size: 14px; }
+.commentList article b em { font-size: 10px; }
+.commentList article small { font-size: 11px; }
+.commentList article p { font-size: 14px; line-height: 1.6; }
+.commentComposer button { font-size: 13px; padding: 11px 16px; }
 
 /* Authentication */
 .authIntro p { font-size: 15px; }
