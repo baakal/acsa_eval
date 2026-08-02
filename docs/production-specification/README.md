@@ -1,0 +1,33 @@
+# Production Specification (Split by Section)
+
+This folder breaks the original monolithic production specification into smaller, readable documents.
+
+## Sections
+
+- [SECTION 1 — EXECUTIVE SUMMARY](section-1-executive-summary.md)
+- [SECTION 2 — PRODUCT REQUIREMENTS DOCUMENT](section-2-product-requirements-document.md)
+- [SECTION 3 — PROTOTYPE GAP ANALYSIS](section-3-prototype-gap-analysis.md)
+- [SECTION 4 — USER AND ROLE MODEL](section-4-user-and-role-model.md)
+- [SECTION 5 — USER JOURNEYS](section-5-user-journeys.md)
+- [SECTION 6 — FUNCTIONAL REQUIREMENTS SPECIFICATION](section-6-functional-requirements-specification.md)
+- [SECTION 7 — BUSINESS RULES](section-7-business-rules.md)
+- [SECTION 8 — SCREEN INVENTORY AND UI SPECIFICATION](section-8-screen-inventory-and-ui-specification.md)
+- [SECTION 9 — REACT NATIVE FRONTEND ARCHITECTURE](section-9-react-native-frontend-architecture.md)
+- [SECTION 10 — FASTAPI BACKEND ARCHITECTURE](section-10-fastapi-backend-architecture.md)
+- [SECTION 11 — POSTGRESQL DATA MODEL](section-11-postgresql-data-model.md)
+- [SECTION 12 — API SPECIFICATION](section-12-api-specification.md)
+- [SECTION 13 — NON-FUNCTIONAL REQUIREMENTS](section-13-non-functional-requirements.md)
+- [SECTION 14 — LOCALIZATION SPECIFICATION](section-14-localization-specification.md)
+- [SECTION 15 — OFFLINE AND CONNECTIVITY STRATEGY](section-15-offline-and-connectivity-strategy.md)
+- [SECTION 16 — FILE AND OBJECT STORAGE SPECIFICATION](section-16-file-and-object-storage-specification.md)
+- [SECTION 17 — DEPLOYMENT SPECIFICATION](section-17-deployment-specification.md)
+- [SECTION 18 — MONITORING AND OBSERVABILITY](section-18-monitoring-and-observability.md)
+- [SECTION 19 — TESTING SPECIFICATION](section-19-testing-specification.md)
+- [SECTION 20 — OPEN DECISIONS REQUIRING STAKEHOLDER CONFIRMATION](section-20-open-decisions-requiring-stakeholder-confirmation.md)
+- [SECTION 21 — MISSING PRODUCTION FUNCTIONALITY (PROTOTYPE GAPS SUMMARY)](section-21-missing-production-functionality-prototype-gaps-summary.md)
+- [SECTION 22 — RECOMMENDED IMPLEMENTATION SEQUENCE](section-22-recommended-implementation-sequence.md)
+- [SECTION 23 — QUESTIONNAIRE SEED DATA SPECIFICATION](section-23-questionnaire-seed-data-specification.md)
+- [SECTION 24 — SAMPLE SCORING WORKED EXAMPLE](section-24-sample-scoring-worked-example.md)
+- [APPENDIX A — REQUIREMENTS STATISTICS FROM PROTOTYPE CATALOGUE](appendix-a-requirements-statistics-from-prototype-catalogue.md)
+- [APPENDIX B — PROTOTYPE TECHNOLOGY STACK SUMMARY](appendix-b-prototype-technology-stack-summary.md)
+- [APPENDIX C — RECOMMENDED LIBRARY VERSIONS](appendix-c-recommended-library-versions.md)
