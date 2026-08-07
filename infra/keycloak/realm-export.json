@@ -1,0 +1,116 @@
+{
+  "realm": "acsa",
+  "enabled": true,
+  "displayName": "ACSA Self-Evaluation Portal",
+  "displayNameHtml": "<strong>ACSA</strong> Self-Evaluation Portal",
+  "registrationAllowed": false,
+  "registrationEmailAsUsername": true,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "editUsernameAllowed": false,
+  "bruteForceProtected": true,
+  "permanentLockout": false,
+  "maxFailureWaitSeconds": 900,
+  "minimumQuickLoginWaitSeconds": 60,
+  "waitIncrementSeconds": 60,
+  "quickLoginCheckMilliSeconds": 1000,
+  "maxDeltaTimeSeconds": 43200,
+  "failureFactor": 5,
+  "defaultRole": {
+    "name": "applicant",
+    "description": "Default role for new users (applicants)"
+  },
+  "roles": {
+    "realm": [
+      {
+        "name": "applicant",
+        "description": "Organization member completing an assessment"
+      },
+      {
+        "name": "reviewer",
+        "description": "ACSA reviewer verifying and adjudicating assessments"
+      },
+      {
+        "name": "adjudicator",
+        "description": "ACSA adjudicator resolving contested findings"
+      },
+      {
+        "name": "admin",
+        "description": "Platform administrator — manages users, orgs, questionnaires"
+      },
+      {
+        "name": "progress_monitor",
+        "description": "Read-only observer of assessment progress (no answers visible)"
+      }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "acsa-api",
+      "name": "ACSA API",
+      "description": "Backend API resource server",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "bearerOnly": false,
+      "publicClient": false,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "protocol": "openid-connect",
+      "defaultClientScopes": ["web-origins", "profile", "roles", "email"],
+      "optionalClientScopes": ["address", "phone", "offline_access", "microprofile-jwt"]
+    },
+    {
+      "clientId": "acsa-mobile",
+      "name": "ACSA Mobile / Web App",
+      "description": "React Native / Expo public client (PKCE)",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "bearerOnly": false,
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "protocol": "openid-connect",
+      "redirectUris": [
+        "http://localhost:8081/*",
+        "http://localhost:3000/*",
+        "acsa://auth/callback",
+        "exp://localhost:8081/*"
+      ],
+      "webOrigins": [
+        "http://localhost:8081",
+        "http://localhost:3000"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256"
+      },
+      "defaultClientScopes": ["web-origins", "profile", "roles", "email"],
+      "optionalClientScopes": ["address", "phone", "offline_access"]
+    }
+  ],
+  "defaultDefaultClientScopes": [
+    "role_list",
+    "profile",
+    "email",
+    "roles",
+    "web-origins"
+  ],
+  "accessTokenLifespan": 300,
+  "accessTokenLifespanForImplicitFlow": 900,
+  "ssoSessionIdleTimeout": 1800,
+  "ssoSessionMaxLifespan": 36000,
+  "offlineSessionIdleTimeout": 2592000,
+  "passwordPolicy": "length(12) and upperCase(1) and lowerCase(1) and digits(1) and specialChars(1) and notUsername(undefined)",
+  "smtpServer": {},
+  "loginTheme": "",
+  "accountTheme": "",
+  "adminTheme": "",
+  "emailTheme": "",
+  "internationalizationEnabled": true,
+  "supportedLocales": ["en", "fr", "pt"],
+  "defaultLocale": "en"
+}
