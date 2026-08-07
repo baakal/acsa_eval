@@ -90,7 +90,7 @@ async def get_questionnaire_version(
             detail="Questionnaire version not found.",
         )
 
-    # Load sections ordered by display_order
+    # Load all sections and requirements in two queries (avoids N+1)
     sections_result = await db.execute(
         select(Section)
         .where(Section.questionnaire_version_id == version_id)
@@ -98,24 +98,37 @@ async def get_questionnaire_version(
     )
     sections = sections_result.scalars().all()
 
-    section_outs = []
-    for section in sections:
+    # Fetch all requirements for this version in one query
+    section_ids = [s.id for s in sections]
+    if section_ids:
         reqs_result = await db.execute(
             select(Requirement)
-            .where(Requirement.section_id == section.id, Requirement.is_active.is_(True))
-            .order_by(Requirement.display_order)
-        )
-        reqs = reqs_result.scalars().all()
-        section_outs.append(
-            SectionOut(
-                id=section.id,
-                stable_id=section.stable_id,
-                name=section.name,
-                description=section.description,
-                display_order=section.display_order,
-                requirements=[RequirementOut.model_validate(r) for r in reqs],
+            .where(
+                Requirement.section_id.in_(section_ids),
+                Requirement.is_active.is_(True),
             )
+            .order_by(Requirement.section_id, Requirement.display_order)
         )
+        all_reqs = reqs_result.scalars().all()
+    else:
+        all_reqs = []
+
+    # Group requirements by section_id
+    reqs_by_section: dict[uuid.UUID, list[Requirement]] = {}
+    for req in all_reqs:
+        reqs_by_section.setdefault(req.section_id, []).append(req)
+
+    section_outs = [
+        SectionOut(
+            id=section.id,
+            stable_id=section.stable_id,
+            name=section.name,
+            description=section.description,
+            display_order=section.display_order,
+            requirements=[RequirementOut.model_validate(r) for r in reqs_by_section.get(section.id, [])],
+        )
+        for section in sections
+    ]
 
     return QuestionnaireVersionOut(
         id=version.id,

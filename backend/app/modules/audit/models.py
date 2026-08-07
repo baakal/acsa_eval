@@ -1,7 +1,7 @@
 """ORM models — Audit Events and Notifications."""
 
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 
 from sqlalchemy import Boolean, DateTime, ForeignKey, String, Text
 from sqlalchemy.dialects.postgresql import INET, JSONB, UUID
@@ -27,7 +27,7 @@ class AuditEvent(Base):
     user_agent: Mapped[str | None] = mapped_column(Text)
     trace_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True))
     occurred_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, default=datetime.utcnow
+        DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc)
     )
 
 
@@ -43,5 +43,5 @@ class Notification(Base):
     is_read: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     read_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False, default=datetime.utcnow
+        DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc)
     )

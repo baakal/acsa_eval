@@ -1,7 +1,7 @@
 """Assessments API — Sprint 6 (list + create) and Sprint 11 (submit)."""
 
 import uuid
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -177,6 +177,6 @@ async def submit_assessment(assessment_id: uuid.UUID, db: Db, current: Auth):
         )
 
     assessment.status = "SUBMITTED"
-    assessment.submitted_at = datetime.utcnow()
+    assessment.submitted_at = datetime.now(timezone.utc)
 
     return AssessmentOut.model_validate(assessment)

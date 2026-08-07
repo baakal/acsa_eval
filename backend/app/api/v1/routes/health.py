@@ -36,7 +36,7 @@ async def readiness():
         checks["database"] = "ok"
     except Exception as exc:
         logger.warning("health_db_fail", error=str(exc))
-        checks["database"] = f"error: {exc}"
+        checks["database"] = "error"
         overall_ok = False
 
     # ── Redis ─────────────────────────────────────────────────────────────────
@@ -48,7 +48,7 @@ async def readiness():
         checks["redis"] = "ok"
     except Exception as exc:
         logger.warning("health_redis_fail", error=str(exc))
-        checks["redis"] = f"error: {exc}"
+        checks["redis"] = "error"
         overall_ok = False
 
     status_code = status.HTTP_200_OK if overall_ok else status.HTTP_503_SERVICE_UNAVAILABLE

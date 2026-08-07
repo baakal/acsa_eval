@@ -1,7 +1,7 @@
 """Organizations API — Sprint 4."""
 
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -155,7 +155,7 @@ async def approve_organization(org_id: uuid.UUID, db: Db, current: AdminAuth):
     approver = await _get_or_create_user(db, current)
     org.status = "APPROVED"
     org.approved_by = approver.id
-    org.approved_at = datetime.utcnow()
+    org.approved_at = datetime.now(timezone.utc)
 
     return OrganizationOut.model_validate(org)
 
@@ -173,9 +173,6 @@ async def reject_organization(org_id: uuid.UUID, db: Db, current: AdminAuth):
     if not org:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Organization not found.")
 
-    approver = await _get_or_create_user(db, current)
     org.status = "REJECTED"
-    org.approved_by = approver.id
-    org.approved_at = datetime.utcnow()
 
     return OrganizationOut.model_validate(org)

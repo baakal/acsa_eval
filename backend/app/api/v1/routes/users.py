@@ -1,7 +1,7 @@
 """Users API — profile and user sync from Keycloak."""
 
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, status
@@ -47,5 +47,5 @@ async def get_current_user_profile(db: Db, current: Auth):
         db.add(user)
         await db.flush()
 
-    user.last_login_at = datetime.utcnow()
+    user.last_login_at = datetime.now(timezone.utc)
     return UserOut.model_validate(user)

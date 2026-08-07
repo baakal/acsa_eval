@@ -20,7 +20,6 @@ def scan_file(self, file_object_id: str) -> dict:
     Args:
         file_object_id: UUID of the file_objects row to scan.
     """
-    import asyncio
     import socket
     from app.core.config import settings
 
