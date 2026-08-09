@@ -9,7 +9,6 @@ import {
 } from './config';
 import { getComplianceScoreValue } from './scoring';
 import type {
-  Account,
   Attachment,
   CatalogueItem,
   CategorySubmission,
@@ -19,6 +18,7 @@ import type {
   PortableDataFile,
   RequirementAnswer,
   ScoringSummary,
+  SessionAccount,
   WeightedPriority,
 } from './types';
 
@@ -137,7 +137,7 @@ function isPortableAccountMetadata(value: unknown): value is PortableAccountMeta
   );
 }
 
-function getPortableAccount(account: Account): PortableAccountMetadata {
+function getPortableAccount(account: SessionAccount): PortableAccountMetadata {
   return {
     id: account.id,
     role: account.role,
@@ -149,7 +149,7 @@ function getPortableAccount(account: Account): PortableAccountMetadata {
 }
 
 export function buildPortableDataFile(
-  account: Account,
+  account: SessionAccount,
   answers: Record<string, RequirementAnswer>,
   categorySubmissions: Record<string, CategorySubmission>,
 ): PortableDataFile {
@@ -163,7 +163,7 @@ export function buildPortableDataFile(
 }
 
 export function exportPortableData(
-  account: Account,
+  account: SessionAccount,
   answers: Record<string, RequirementAnswer>,
   categorySubmissions: Record<string, CategorySubmission>,
 ) {
@@ -290,7 +290,7 @@ function updateSummarySheet(summarySheet: XLSX.WorkSheet, catalogue: CatalogueIt
 
 function updateMasterSheet(
   masterSheet: XLSX.WorkSheet,
-  account: Account,
+  account: SessionAccount,
   catalogue: CatalogueItem[],
   answers: Record<string, RequirementAnswer>,
 ) {
@@ -425,7 +425,7 @@ function updateAnalyticsSheet(analyticsSheet: XLSX.WorkSheet, summary: ScoringSu
 }
 
 export async function exportWorkbook(
-  account: Account,
+  account: SessionAccount,
   catalogue: CatalogueItem[],
   answers: Record<string, RequirementAnswer>,
   summary: ScoringSummary,

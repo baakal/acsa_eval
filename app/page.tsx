@@ -9,11 +9,12 @@ import { AuthScreen } from './components/AuthScreen';
 import { useAnswers } from './hooks/useAnswers';
 import { useCategorySubmissions } from './hooks/useCategorySubmissions';
 import { useScoring } from './hooks/useScoring';
+import { useSessionAccount } from './hooks/useSessionAccount';
 import { MAX_UPLOAD_BYTES } from './lib/config';
 import { SESSION_KEY } from './lib/auth';
 import { exportPortableData, exportWorkbook, readPortableDataFile, summarizePortableImport, validatePortableDataFile } from './lib/portability';
 import { isAnswerComplete } from './lib/scoring';
-import type { Account, FilterKey, PortableDataFile, RequirementAnswer, ResponseTab } from './lib/types';
+import type { FilterKey, PortableDataFile, RequirementAnswer, ResponseTab } from './lib/types';
 import { usePersistentValue, writePersistentValue } from './use-persistent-state';
 
 function subscribeToHydration() {
@@ -34,8 +35,9 @@ export default function Home() {
     getHydratedSnapshot,
     getServerHydratedSnapshot,
   );
-  const [account] = usePersistentValue<Account | null>(SESSION_KEY, null);
-  const accountId = account?.id ?? 'signed-out';
+  const [sessionToken] = usePersistentValue<string | null>(SESSION_KEY, null);
+  const { account, loaded: sessionLoaded } = useSessionAccount(sessionToken);
+  const accountId = account?.id ?? sessionToken ?? 'signed-out';
   const answersKey = `acsa-requirement-answers:${accountId}`;
   const submissionsKey = `acsa-category-submissions:${accountId}`;
   const { answers, setAnswers, upsertAnswer, getAnswer } = useAnswers(answersKey);
@@ -365,7 +367,7 @@ export default function Home() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   });
 
-  if (!hydrated) {
+  if (!hydrated || (sessionToken !== null && !sessionLoaded)) {
     return (
       <main className="appLoading" aria-label="Loading ACSA Evaluation">
         <span className="mark">A</span>

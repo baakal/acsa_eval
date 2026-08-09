@@ -10,7 +10,10 @@ export type Account = {
   organization: string;
   country: string;
   passwordHash: string;
+  passwordSalt?: string;
 };
+
+export type SessionAccount = Omit<Account, 'passwordHash' | 'passwordSalt'>;
 
 export type ComplianceLevel =
   | 'Fully Meets'
@@ -111,7 +114,7 @@ export type ScoringSummary = {
   dependencyAnalytics: DistributionAnalyticsRow[];
 };
 
-export type PortableAccountMetadata = Omit<Account, 'passwordHash'>;
+export type PortableAccountMetadata = SessionAccount;
 
 export type PortableDataFile = {
   formatVersion: number;

@@ -1,13 +1,13 @@
 import { Fragment } from 'react';
 import { complianceValues } from '../lib/config';
 import type {
-  Account,
   DistributionAnalyticsRow,
+  SessionAccount,
   ScopeAnalytics,
 } from '../lib/types';
 
 type AnalyticsViewProps = {
-  account: Account;
+  account: SessionAccount;
   answered: number;
   totalRequirements: number;
   complianceScore: number;

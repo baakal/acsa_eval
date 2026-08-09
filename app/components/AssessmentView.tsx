@@ -3,7 +3,7 @@ import type { CatalogueItem, FilterKey, RequirementAnswer, ResponseTab } from '.
 import { isAnswerComplete } from '../lib/scoring';
 import { Navigator } from './Navigator';
 import { RequirementDetail } from './RequirementDetail';
-import type { Account, CategorySubmission } from '../lib/types';
+import type { CategorySubmission, SessionAccount } from '../lib/types';
 
 type NavigatorGroup = {
   category: string;
@@ -14,7 +14,7 @@ type NavigatorGroup = {
 };
 
 type AssessmentViewProps = {
-  account: Account;
+  account: SessionAccount;
   answered: number;
   totalRequirements: number;
   categories: string[];

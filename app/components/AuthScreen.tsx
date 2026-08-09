@@ -1,12 +1,19 @@
 'use client';
 
 import { FormEvent, useState } from 'react';
-import { usePersistentValue, writePersistentValue } from '../use-persistent-state';
-import { ACCOUNTS_KEY, SESSION_KEY, hashPassword } from '../lib/auth';
+import { writePersistentValue } from '../use-persistent-state';
+import {
+  createPasswordRecord,
+  hashLegacyPassword,
+  hashPassword,
+  SESSION_KEY,
+} from '../lib/auth';
+import { createSession } from '../lib/account-store';
+import { useAccountStore } from '../hooks/useAccountStore';
 import type { Account, AccountRole } from '../lib/types';
 
 export function AuthScreen() {
-  const [accounts, setAccounts] = usePersistentValue<Account[]>(ACCOUNTS_KEY, []);
+  const { accounts, setAccounts, loaded } = useAccountStore();
   const [view, setView] = useState<'login' | 'register'>('login');
   const [role, setRole] = useState<AccountRole>('Country');
   const [error, setError] = useState('');
@@ -18,16 +25,36 @@ export function AuthScreen() {
     setError('');
     const data = new FormData(event.currentTarget);
     const email = String(data.get('email')).trim().toLowerCase();
-    const passwordHash = await hashPassword(String(data.get('password')));
-    const account = accounts.find(
-      (candidate) => candidate.email === email && candidate.passwordHash === passwordHash,
-    );
+    const password = String(data.get('password'));
+    const account = accounts.find((candidate) => candidate.email === email);
     if (!account) {
       setError('Email or password is incorrect.');
       setBusy(false);
       return;
     }
-    writePersistentValue(SESSION_KEY, account);
+    let authenticated = false;
+    let activeAccount = account;
+
+    if (account.passwordSalt) {
+      authenticated = (await hashPassword(password, account.passwordSalt)) === account.passwordHash;
+    } else {
+      authenticated = (await hashLegacyPassword(password)) === account.passwordHash;
+      if (authenticated) {
+        const passwordRecord = await createPasswordRecord(password);
+        activeAccount = { ...account, ...passwordRecord };
+        setAccounts(
+          accounts.map((candidate) => (candidate.id === account.id ? activeAccount : candidate)),
+        );
+      }
+    }
+
+    if (!authenticated) {
+      setError('Email or password is incorrect.');
+      setBusy(false);
+      return;
+    }
+    writePersistentValue(SESSION_KEY, await createSession(activeAccount.id));
+    setBusy(false);
   }
 
   async function register(event: FormEvent<HTMLFormElement>) {
@@ -41,6 +68,7 @@ export function AuthScreen() {
       setBusy(false);
       return;
     }
+    const passwordRecord = await createPasswordRecord(String(data.get('password')));
     const account: Account = {
       id: window.crypto.randomUUID(),
       role,
@@ -48,10 +76,11 @@ export function AuthScreen() {
       email,
       organization: String(data.get('organization')).trim(),
       country: String(data.get('country')).trim(),
-      passwordHash: await hashPassword(String(data.get('password'))),
+      ...passwordRecord,
     };
     setAccounts([...accounts, account]);
-    writePersistentValue(SESSION_KEY, account);
+    writePersistentValue(SESSION_KEY, await createSession(account.id));
+    setBusy(false);
   }
 
   return (
@@ -82,6 +111,7 @@ export function AuthScreen() {
               ? 'Sign in to continue your assessment.'
               : 'Tell us who you represent to configure your workspace.'}
           </p>
+          {!loaded && <div className="authError">Loading saved accounts…</div>}
           {view === 'register' && (
             <div className="rolePicker">
               <button
@@ -134,7 +164,7 @@ export function AuthScreen() {
               />
             </label>
             {error && <div className="authError">{error}</div>}
-            <button className="authSubmit" disabled={busy}>
+            <button className="authSubmit" disabled={busy || !loaded}>
               {busy ? 'Please wait…' : view === 'login' ? 'Sign in' : `Register as ${role}`}
             </button>
           </form>

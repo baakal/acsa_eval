@@ -2,16 +2,16 @@ import { ChangeEvent } from 'react';
 import { complianceOptions, MAX_UPLOAD_BYTES } from '../lib/config';
 import { isAnswerComplete } from '../lib/scoring';
 import type {
-  Account,
   CatalogueItem,
   CategorySubmission,
   RequirementAnswer,
   ResponseTab,
   ReviewStatus,
+  SessionAccount,
 } from '../lib/types';
 
 type RequirementDetailProps = {
-  account: Account;
+  account: SessionAccount;
   selectedCategory: string;
   categoryRequirements: CatalogueItem[];
   selectedRequirement: CatalogueItem;
