@@ -384,8 +384,8 @@ Update this table as sprints are completed.
 
 | Sprint | Status | Notes |
 |---|---|---|
-| 0 — Foundations | ⬜ Not started | |
-| 1 — Data Portability | ⬜ Not started | |
+| 0 — Foundations | ✅ Complete | Components split, shared hooks/libs added, tests scaffolded, and CI workflow created |
+| 1 — Data Portability | ✅ Complete | JSON export/import, workbook-based XLSX export, and print/PDF analytics support added |
 | 2 — Backend: Database & API | ⬜ Not started | |
 | 3 — Role Enforcement & Collaboration | ⬜ Not started | |
 | 4 — Admin & Reporting | ⬜ Not started | |
