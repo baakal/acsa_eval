@@ -37,7 +37,7 @@ services:
 
   # ── Keycloak ─────────────────────────────────────────────────────────────────
   keycloak:
-    image: quay.io/keycloak/keycloak:24
+    image: quay.io/keycloak/keycloak:24.0
     command: start-dev --import-realm
     environment:
       KEYCLOAK_ADMIN: admin
@@ -85,6 +85,7 @@ services:
   # ── ClamAV (malware scanning) ────────────────────────────────────────────────
   clamd:
     image: clamav/clamav:stable
+    platform: linux/amd64
     environment:
       CLAMAV_NO_FRESHCLAMD: "false"
     volumes:
