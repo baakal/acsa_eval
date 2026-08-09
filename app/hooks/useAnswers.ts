@@ -1,7 +1,9 @@
 'use client';
 
-import { useCallback } from 'react';
-import { usePersistentValue } from '../use-persistent-state';
+import { useCallback, useMemo } from 'react';
+import { useSession } from 'next-auth/react';
+import useSWR from 'swr';
+import { listResponses, upsertResponse } from '../lib/api-client';
 import type { RequirementAnswer } from '../lib/types';
 
 export function normalizeAnswer(answer?: Partial<RequirementAnswer>): RequirementAnswer {
@@ -19,21 +21,135 @@ export function normalizeAnswer(answer?: Partial<RequirementAnswer>): Requiremen
   };
 }
 
-export function useAnswers(key: string) {
-  const [answers, setAnswers] = usePersistentValue<Record<string, RequirementAnswer>>(key, {});
+/** Map a backend ResponseOut to a frontend RequirementAnswer. */
+function responseToAnswer(resp: {
+  compliance_code: string | null;
+  operating_mode: string | null;
+  depends_on_systems: boolean | null;
+  dependent_systems: string | null;
+  evidence_text: string | null;
+  notes: string | null;
+  review_outcome: string | null;
+}): RequirementAnswer {
+  const reviewStatusMap: Record<string, RequirementAnswer['reviewStatus']> = {
+    APPROVED: 'Approved',
+    CHANGES_REQUESTED: 'Changes Requested',
+  };
+  return normalizeAnswer({
+    compliance: (resp.compliance_code ?? undefined) as RequirementAnswer['compliance'],
+    mode: (resp.operating_mode ?? undefined) as RequirementAnswer['mode'],
+    dependsOnOtherSystems: resp.depends_on_systems ?? undefined,
+    dependentSystems: resp.dependent_systems ?? '',
+    evidence: resp.evidence_text ?? '',
+    notes: resp.notes ?? '',
+    reviewStatus: reviewStatusMap[resp.review_outcome ?? ''] ?? 'Not Reviewed',
+  });
+}
+
+/** Map a frontend RequirementAnswer to a backend ResponseUpsert payload. */
+function answerToUpsert(answer: Partial<RequirementAnswer>) {
+  const reviewOutcomeMap: Record<string, string | null> = {
+    Approved: 'APPROVED',
+    'Changes Requested': 'CHANGES_REQUESTED',
+    'Not Reviewed': null,
+  };
+  const isComplete = Boolean(answer.compliance);
+  return {
+    compliance_code: answer.compliance ?? null,
+    operating_mode: answer.mode ?? null,
+    depends_on_systems: answer.dependsOnOtherSystems ?? null,
+    dependent_systems: answer.dependentSystems ?? null,
+    evidence_text: answer.evidence ?? null,
+    notes: answer.notes ?? null,
+    is_complete: isComplete,
+    review_outcome: reviewOutcomeMap[answer.reviewStatus ?? 'Not Reviewed'] ?? null,
+  };
+}
+
+export function useAnswers(assessmentId: string | null) {
+  const { data: session } = useSession();
+  const token = session?.accessToken ?? '';
+
+  const { data: responses, mutate } = useSWR(
+    assessmentId && token ? ['responses', assessmentId, token] : null,
+    ([, id, t]) => listResponses(t as string, id as string),
+    { revalidateOnFocus: false },
+  );
+
+  const answers = useMemo<Record<string, RequirementAnswer>>(() => {
+    if (!responses) return {};
+    return Object.fromEntries(
+      responses.map((r) => [r.requirement_stable_id, responseToAnswer(r)]),
+    );
+  }, [responses]);
 
   const upsertAnswer = useCallback(
     (requirementId: string, patch: Partial<RequirementAnswer>) => {
+      if (!assessmentId || !token) return;
       const previous = answers[requirementId];
-      setAnswers({
-        ...answers,
-        [requirementId]: normalizeAnswer({
-          ...previous,
-          ...patch,
-        }),
-      });
+      const merged = normalizeAnswer({ ...previous, ...patch });
+
+      const reviewOutcomeMap: Record<string, string | null> = {
+        Approved: 'APPROVED',
+        'Changes Requested': 'CHANGES_REQUESTED',
+        'Not Reviewed': null,
+      };
+
+      // Optimistic update
+      mutate(
+        (current) => {
+          const existing = current ?? [];
+          const index = existing.findIndex((r) => r.requirement_stable_id === requirementId);
+          const updated = {
+            id: existing[index]?.id ?? '',
+            assessment_id: assessmentId,
+            requirement_stable_id: requirementId,
+            compliance_code: merged.compliance ?? null,
+            operating_mode: merged.mode ?? null,
+            depends_on_systems: merged.dependsOnOtherSystems ?? null,
+            dependent_systems: merged.dependentSystems ?? null,
+            evidence_text: merged.evidence ?? null,
+            notes: merged.notes ?? null,
+            is_complete: Boolean(merged.compliance),
+            review_outcome: reviewOutcomeMap[merged.reviewStatus] ?? null,
+            updated_at: new Date().toISOString(),
+          };
+          if (index >= 0) {
+            return [...existing.slice(0, index), updated, ...existing.slice(index + 1)];
+          }
+          return [...existing, updated];
+        },
+        { revalidate: false },
+      );
+
+      // Persist to backend
+      upsertResponse(token, assessmentId, requirementId, answerToUpsert(merged)).then(
+        (saved) => {
+          mutate(
+            (current) =>
+              (current ?? []).map((r) =>
+                r.requirement_stable_id === requirementId ? saved : r,
+              ),
+            { revalidate: false },
+          );
+        },
+        () => {
+          // On error, revalidate to restore server state
+          mutate();
+        },
+      );
     },
-    [answers, setAnswers],
+    [assessmentId, token, answers, mutate],
+  );
+
+  const setAnswers = useCallback(
+    (nextAnswers: Record<string, RequirementAnswer>) => {
+      if (!assessmentId || !token) return;
+      for (const [requirementId, answer] of Object.entries(nextAnswers)) {
+        upsertAnswer(requirementId, answer);
+      }
+    },
+    [assessmentId, token, upsertAnswer],
   );
 
   const getAnswer = useCallback(
@@ -43,3 +159,4 @@ export function useAnswers(key: string) {
 
   return { answers, setAnswers, upsertAnswer, getAnswer };
 }
+
