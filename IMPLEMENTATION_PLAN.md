@@ -119,121 +119,58 @@ Create `.github/workflows/ci.yml`:
 
 **Goal:** Replace `localStorage` with a real database. This is the core migration sprint.
 
-### 2.1 — Install and configure Prisma + PostgreSQL
+> **Architecture note:** The implementation uses **FastAPI + Keycloak OIDC + PostgreSQL (SQLAlchemy/Alembic)** rather than the
+> Prisma + Next.js API routes originally described. The backend lives in `backend/` and the frontend
+> connects via `next-auth` (Keycloak provider) + SWR data-fetching hooks.
 
-```bash
-npm install prisma @prisma/client
-npx prisma init
-```
+### 2.1 — Database schema (FastAPI / SQLAlchemy)
 
-**Schema (`prisma/schema.prisma`):**
+Models already defined in `backend/app/modules/`:
+- `User` (keycloak_sub, email, full_name) — `organizations/models.py`
+- `Organization` + `OrganizationMember` — `organizations/models.py`
+- `Assessment` — `assessments/models.py`
+- `Response` (per-requirement answer) — `assessments/models.py`
+- `Evidence`, `FileObject` — `assessments/models.py`
+- `AssessmentSectionStatus` ← **added Sprint 2** — `assessments/models.py`
 
-```prisma
-model User {
-  id           String   @id @default(cuid())
-  email        String   @unique
-  name         String
-  organization String
-  country      String
-  role         String   // "Country" | "Solution Provider"
-  passwordHash String
-  createdAt    DateTime @default(now())
+Alembic migrations: `backend/app/db/migrations/versions/`
 
-  answers             Answer[]
-  categorySubmissions CategorySubmission[]
-  comments            Comment[]
-}
-
-model Answer {
-  id                   String   @id @default(cuid())
-  userId               String
-  requirementId        String
-  compliance           String?
-  mode                 String?
-  dependsOnOtherSystems Boolean?
-  dependentSystems     String   @default("")
-  evidence             String   @default("")
-  notes                String   @default("")
-  reviewStatus         String   @default("Not Reviewed")
-  reviewFeedback       String   @default("")
-  updatedAt            DateTime @updatedAt
-
-  user        User         @relation(fields: [userId], references: [id])
-  attachments Attachment[]
-  comments    Comment[]
-
-  @@unique([userId, requirementId])
-}
-
-model CategorySubmission {
-  id          String   @id @default(cuid())
-  userId      String
-  category    String
-  status      String   @default("Draft")
-  submittedAt DateTime?
-
-  user User @relation(fields: [userId], references: [id])
-
-  @@unique([userId, category])
-}
-
-model Attachment {
-  id         String   @id @default(cuid())
-  answerId   String
-  name       String
-  type       String
-  size       Int
-  storagePath String  // path on disk or S3 key
-  uploadedAt DateTime @default(now())
-
-  answer Answer @relation(fields: [answerId], references: [id])
-}
-
-model Comment {
-  id        String   @id @default(cuid())
-  answerId  String
-  userId    String
-  message   String
-  createdAt DateTime @default(now())
-
-  answer Answer @relation(fields: [answerId], references: [id])
-  user   User   @relation(fields: [userId], references: [id])
-}
-```
-
-### 2.2 — Next.js API routes
-
-Create under `app/api/`:
+### 2.2 — FastAPI API routes
 
 | Route | Method | Purpose |
 |---|---|---|
-| `/api/auth/register` | POST | Create account (server-side bcrypt hash) |
-| `/api/auth/login` | POST | Validate credentials, set session cookie |
-| `/api/auth/logout` | POST | Clear session |
-| `/api/auth/me` | GET | Return current session user |
-| `/api/answers` | GET | Fetch all answers for current user |
-| `/api/answers/[requirementId]` | PUT | Upsert a single answer |
-| `/api/submissions` | GET | Fetch all category submissions for current user |
-| `/api/submissions/[category]` | PUT | Upsert a category submission |
-| `/api/attachments` | POST | Upload a file (multipart) |
-| `/api/attachments/[id]` | DELETE | Remove an attachment |
-| `/api/attachments/[id]/download` | GET | Stream file to browser |
+| `/api/v1/me/workspace` | POST | Bootstrap user → org → assessment (idempotent) |
+| `/api/v1/assessments/{id}/responses` | GET | List all responses for an assessment |
+| `/api/v1/assessments/{id}/responses/{req_stable_id}` | PUT | Upsert a single response |
+| `/api/v1/assessments/{id}/section-statuses` | GET | List section submission statuses |
+| `/api/v1/assessments/{id}/section-statuses/{section_stable_id}` | PUT | Upsert a section status |
 
 ### 2.3 — Replace `use-persistent-state.ts`
 
-This is the **single file swap** that connects the frontend to the backend.
-
-Replace `localStorage` calls with `fetch` calls to the API routes above.
-The exported API surface (`usePersistentValue`, `writePersistentValue`) stays the same
-so `page.tsx` components need minimal changes.
-
-Alternatively, introduce React Query or SWR for cache management and optimistic updates.
+- `useAnswers.ts` now fetches responses from the API via SWR; `upsertAnswer` does optimistic
+  updates and persists to `PUT /api/v1/assessments/{id}/responses/{req_stable_id}`.
+- `useCategorySubmissions.ts` mirrors this pattern for section statuses.
+- `useSessionAccount.ts` now derives the `SessionAccount` from the `next-auth` session instead of IndexedDB.
+- `use-persistent-state.ts` is retained for the `SESSION_KEY` migration path but is no longer
+  used by the core data hooks.
 
 ### 2.4 — Session management
 
-- Install `iron-session` or `next-auth` for cookie-based sessions
-- Move password hashing from client (`window.crypto.subtle` SHA-256 in `auth.tsx`) to server (`bcrypt`)
-- Remove `ACCOUNTS_KEY` from `localStorage` entirely — accounts live in the database
+- **Frontend:** `next-auth` with `KeycloakProvider` (`app/api/auth/[...nextauth]/route.ts`).
+  The Keycloak access token is attached to every API request.
+- **Backend:** Keycloak JWKS validation (`backend/app/core/security.py`).
+- Passwords are managed entirely by Keycloak — no client-side hashing.
+
+### Environment variables (added)
+
+| Variable | Purpose |
+|---|---|
+| `NEXT_PUBLIC_API_URL` | FastAPI base URL (browser-side) |
+| `NEXTAUTH_URL` | Canonical Next.js URL for next-auth |
+| `NEXTAUTH_SECRET` | next-auth cookie signing secret |
+| `KEYCLOAK_CLIENT_ID` | Keycloak client for the frontend (`acsa-web`) |
+| `KEYCLOAK_CLIENT_SECRET` | Keycloak client secret |
+| `KEYCLOAK_ISSUER` | Keycloak issuer URL |
 
 ---
 
@@ -354,14 +291,15 @@ New page at `/admin`:
 | Package | Sprint | Purpose |
 |---|---|---|
 | `xlsx` | 1.3 | Excel export |
-| `prisma` + `@prisma/client` | 2.1 | ORM + database |
-| `bcrypt` + `@types/bcrypt` | 2.4 | Server-side password hashing |
-| `iron-session` or `next-auth` | 2.4 | Session management |
-| `zod` | 2.2 | API input validation |
+| `next-auth` | 2.4 | Keycloak OIDC frontend authentication |
+| `swr` | 2.3 | Client-side data fetching/caching |
+| `fastapi`, `uvicorn`, `sqlalchemy`, `alembic`, `asyncpg` | 2.1 | FastAPI backend + PostgreSQL ORM |
+| `python-jose`, `httpx` | 2.4 | Keycloak JWT validation |
+| `aioboto3` | 2.2 | MinIO/S3 object storage |
+| `celery[redis]`, `redbeat` | Sprint 6 | Background task queue |
 | `vitest` + `@testing-library/react` | 0.2 | Unit and component tests |
-| `pino` | 6.4 | Structured logging |
-| `nodemailer` | 3.4 | Email notifications |
-| `swr` or `@tanstack/react-query` | 2.3 | Client-side data fetching/caching |
+| `pino` / `structlog` | 6.4 | Structured logging |
+| `aiosmtplib`, `jinja2` | 3.4 | Email notifications |
 
 ---
 
@@ -386,7 +324,7 @@ Update this table as sprints are completed.
 |---|---|---|
 | 0 — Foundations | ✅ Complete | Components split, shared hooks/libs added, tests scaffolded, and CI workflow created |
 | 1 — Data Portability | ✅ Complete | JSON export/import, workbook-based XLSX export, and print/PDF analytics support added |
-| 2 — Backend: Database & API | ⬜ Not started | |
+| 2 — Backend: Database & API | ✅ Complete | FastAPI responses + section-status routes, workspace bootstrap, next-auth Keycloak OIDC, SWR-backed hooks |
 | 3 — Role Enforcement & Collaboration | ⬜ Not started | |
 | 4 — Admin & Reporting | ⬜ Not started | |
 | 5 — UX, Accessibility & Mobile | ⬜ Not started | |

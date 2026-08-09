@@ -1,49 +1,36 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { loadSessionAccountForToken } from '../lib/account-store';
+import { useSession } from 'next-auth/react';
 import type { SessionAccount } from '../lib/types';
 
-type SessionState = {
-  account: SessionAccount | null;
-  loadedAccountId: string | null;
-};
+/**
+ * Adapts the next-auth session to the SessionAccount shape used throughout
+ * the application. The Keycloak realm roles determine the account role.
+ */
+export function useSessionAccount() {
+  const { data: session, status } = useSession();
 
-export function useSessionAccount(sessionToken: string | null) {
-  const [state, setState] = useState<SessionState>({
-    account: null,
-    loadedAccountId: null,
-  });
+  if (status === 'loading') {
+    return { account: null, loaded: false };
+  }
 
-  useEffect(() => {
-    let cancelled = false;
-    if (!sessionToken) {
-      return () => {
-        cancelled = true;
-      };
-    }
-
-    loadSessionAccountForToken(sessionToken)
-      .then((account) => {
-        if (cancelled) return;
-        setState({ account, loadedAccountId: sessionToken });
-      })
-      .catch(() => {
-        if (cancelled) return;
-        setState({ account: null, loadedAccountId: sessionToken });
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [sessionToken]);
-
-  if (!sessionToken) {
+  if (!session) {
     return { account: null, loaded: true };
   }
 
-  return {
-    account: state.loadedAccountId === sessionToken ? state.account : null,
-    loaded: state.loadedAccountId === sessionToken,
+  const roles = session.roles ?? [];
+  const isCountry = roles.includes('country') || roles.includes('reviewer');
+  const role: SessionAccount['role'] = isCountry ? 'Country' : 'Solution Provider';
+
+  const account: SessionAccount = {
+    id: session.user?.email ?? 'unknown',
+    role,
+    name: session.user?.name ?? session.user?.email ?? 'User',
+    email: session.user?.email ?? '',
+    organization: session.organizationName ?? '',
+    country: '',
   };
+
+  return { account, loaded: true };
 }
+

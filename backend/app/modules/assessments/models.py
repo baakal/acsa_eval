@@ -3,7 +3,7 @@
 import uuid
 from datetime import date, datetime
 
-from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Integer, Numeric, String, Text
+from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Integer, Numeric, String, Text, UniqueConstraint
 from sqlalchemy.dialects.postgresql import ARRAY, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -96,3 +96,21 @@ class Evidence(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     uploaded_by: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
 
     assessment: Mapped["Assessment"] = relationship(back_populates="evidence_list", lazy="joined")
+
+
+class AssessmentSectionStatus(UUIDPrimaryKeyMixin, TimestampMixin, Base):
+    """Tracks the submission status of a section (category) within an assessment."""
+
+    __tablename__ = "assessment_section_statuses"
+    __table_args__ = (
+        UniqueConstraint("assessment_id", "section_stable_id", name="uq_section_status"),
+    )
+
+    assessment_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("assessments.id"), nullable=False
+    )
+    section_stable_id: Mapped[str] = mapped_column(String(100), nullable=False)
+    status: Mapped[str] = mapped_column(String(50), nullable=False, default="Draft")
+    submitted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+    assessment: Mapped["Assessment"] = relationship(lazy="joined")

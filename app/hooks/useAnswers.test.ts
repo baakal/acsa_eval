@@ -1,24 +1,17 @@
 import { act, renderHook } from '@testing-library/react';
+import { SessionProvider } from 'next-auth/react';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { useAnswers } from './useAnswers';
+import { normalizeAnswer } from './useAnswers';
 
-describe('useAnswers', () => {
-  beforeEach(() => {
-    window.localStorage.clear();
-  });
-
-  it('persists and normalizes patched answers', () => {
-    const { result } = renderHook(() => useAnswers('answers:test'));
-
-    act(() => {
-      result.current.upsertAnswer('REQ-1', {
-        compliance: 'Fully Meets',
-        mode: 'Online',
-        dependsOnOtherSystems: false,
-      });
+describe('normalizeAnswer', () => {
+  it('normalizes a partial answer to a full RequirementAnswer', () => {
+    const result = normalizeAnswer({
+      compliance: 'Fully Meets',
+      mode: 'Online',
+      dependsOnOtherSystems: false,
     });
 
-    expect(result.current.answers['REQ-1']).toEqual({
+    expect(result).toEqual({
       compliance: 'Fully Meets',
       mode: 'Online',
       dependsOnOtherSystems: false,
@@ -31,4 +24,12 @@ describe('useAnswers', () => {
       reviewFeedback: '',
     });
   });
+
+  it('returns default values for an empty input', () => {
+    const result = normalizeAnswer();
+    expect(result.dependentSystems).toBe('');
+    expect(result.reviewStatus).toBe('Not Reviewed');
+    expect(result.attachments).toEqual([]);
+  });
 });
+

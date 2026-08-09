@@ -1,6 +1,7 @@
 'use client';
 
 import { ChangeEvent, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
+import { signOut, useSession } from 'next-auth/react';
 import catalogue from './catalogue.json';
 import { AnalyticsView } from './components/AnalyticsView';
 import { AssessmentView } from './components/AssessmentView';
@@ -10,12 +11,11 @@ import { useAnswers } from './hooks/useAnswers';
 import { useCategorySubmissions } from './hooks/useCategorySubmissions';
 import { useScoring } from './hooks/useScoring';
 import { useSessionAccount } from './hooks/useSessionAccount';
+import { useWorkspace } from './hooks/useWorkspace';
 import { MAX_UPLOAD_BYTES } from './lib/config';
-import { SESSION_KEY } from './lib/auth';
 import { exportPortableData, exportWorkbook, readPortableDataFile, summarizePortableImport, validatePortableDataFile } from './lib/portability';
 import { isAnswerComplete } from './lib/scoring';
 import type { FilterKey, PortableDataFile, RequirementAnswer, ResponseTab } from './lib/types';
-import { usePersistentValue, writePersistentValue } from './use-persistent-state';
 
 function subscribeToHydration() {
   return () => undefined;
@@ -35,13 +35,12 @@ export default function Home() {
     getHydratedSnapshot,
     getServerHydratedSnapshot,
   );
-  const [sessionToken] = usePersistentValue<string | null>(SESSION_KEY, null);
-  const { account, loaded: sessionLoaded } = useSessionAccount(sessionToken);
-  const accountId = account?.id ?? sessionToken ?? 'signed-out';
-  const answersKey = `acsa-requirement-answers:${accountId}`;
-  const submissionsKey = `acsa-category-submissions:${accountId}`;
-  const { answers, setAnswers, upsertAnswer, getAnswer } = useAnswers(answersKey);
-  const { categorySubmissions, setCategorySubmissions } = useCategorySubmissions(submissionsKey);
+  const { status: sessionStatus } = useSession();
+  const { account, loaded: sessionLoaded } = useSessionAccount();
+  const { workspace, loading: workspaceLoading } = useWorkspace();
+  const assessmentId = workspace?.assessment_id ?? null;
+  const { answers, setAnswers, upsertAnswer, getAnswer } = useAnswers(assessmentId);
+  const { categorySubmissions, setCategorySubmissions } = useCategorySubmissions(assessmentId);
   const [search, setSearch] = useState('');
   const [workspaceView, setWorkspaceView] = useState<'home' | 'assessment' | 'analytics'>('home');
   const [commentDraft, setCommentDraft] = useState('');
@@ -367,7 +366,7 @@ export default function Home() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   });
 
-  if (!hydrated || (sessionToken !== null && !sessionLoaded)) {
+  if (!hydrated || sessionStatus === 'loading' || (sessionStatus === 'authenticated' && (workspaceLoading || !sessionLoaded))) {
     return (
       <main className="appLoading" aria-label="Loading ACSA Evaluation">
         <span className="mark">A</span>
@@ -455,7 +454,7 @@ export default function Home() {
                   {dataAction === 'xlsx' ? 'Preparing XLSX…' : 'Export to XLSX'}
                 </button>
                 <button onClick={handlePrint}>Print / Save PDF</button>
-                <button onClick={() => writePersistentValue(SESSION_KEY, null)} className="dangerAction">
+                <button onClick={() => signOut()} className="dangerAction">
                   Sign out
                 </button>
               </div>

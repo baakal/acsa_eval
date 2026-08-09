@@ -9,8 +9,10 @@
   },
   "dependencies": {
     "next": "latest",
+    "next-auth": "^4.24.15",
     "react": "latest",
     "react-dom": "latest",
+    "swr": "^2.5.0",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
