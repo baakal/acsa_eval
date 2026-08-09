@@ -89,6 +89,12 @@ export function useAnswers(assessmentId: string | null) {
       const previous = answers[requirementId];
       const merged = normalizeAnswer({ ...previous, ...patch });
 
+      const reviewOutcomeMap: Record<string, string | null> = {
+        Approved: 'APPROVED',
+        'Changes Requested': 'CHANGES_REQUESTED',
+        'Not Reviewed': null,
+      };
+
       // Optimistic update
       mutate(
         (current) => {
@@ -105,7 +111,7 @@ export function useAnswers(assessmentId: string | null) {
             evidence_text: merged.evidence ?? null,
             notes: merged.notes ?? null,
             is_complete: Boolean(merged.compliance),
-            review_outcome: null,
+            review_outcome: reviewOutcomeMap[merged.reviewStatus] ?? null,
             updated_at: new Date().toISOString(),
           };
           if (index >= 0) {

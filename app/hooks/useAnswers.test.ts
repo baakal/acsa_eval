@@ -1,5 +1,4 @@
 import { act, renderHook } from '@testing-library/react';
-import { SessionProvider } from 'next-auth/react';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { normalizeAnswer } from './useAnswers';
 

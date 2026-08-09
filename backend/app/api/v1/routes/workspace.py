@@ -75,6 +75,7 @@ async def bootstrap_workspace(db: Db, current: Auth):
         .join(OrganizationMember, OrganizationMember.organization_id == Organization.id)
         .where(
             OrganizationMember.user_id == user.id,
+            Organization.name == personal_org_name,
             Organization.deleted_at.is_(None),
         )
         .limit(1)
