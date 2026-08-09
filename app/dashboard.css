@@ -62,6 +62,10 @@
 /* Analytics */
 .analyticsPage { display: grid; gap: 22px; }
 .analyticsHero { display: flex; align-items: end; justify-content: space-between; gap: 30px; }
+.analyticsHeroActions { display: flex; align-items: end; gap: 12px; }
+.analyticsHeroActions > button { border: 1px solid var(--line); background: #fff; color: var(--ink); border-radius: 7px; padding: 10px 14px; font-size: 12px; font-weight: 800; cursor: pointer; }
+.analyticsHeroActions > button:first-child { background: var(--blue); border-color: var(--blue); color: #fff; }
+.analyticsHeroActions > button:disabled { opacity: .55; cursor: progress; }
 .analyticsHero h1 { font-size: 38px; margin: 7px 0 5px; }
 .analyticsHero p { color: var(--muted); font-size: 13px; margin: 0; }
 .analyticsStamp { display: grid; gap: 2px; text-align: right; }
@@ -127,6 +131,7 @@
   .guideSteps article + article, .homeCategories > div:last-child > button:nth-child(even) { border-left: 0; padding-left: 0; }
   .homeCategories > div:last-child > button { padding: 15px 0 !important; }
   .analyticsHero, .homeSectionTitle { display: block; }
+  .analyticsHeroActions { display: grid; gap: 10px; margin-top: 14px; }
   .analyticsStamp { text-align: left; margin-top: 14px; }
   .homeSectionTitle > button { margin-top: 12px; padding: 0; }
 }
