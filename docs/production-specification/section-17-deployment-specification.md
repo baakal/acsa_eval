@@ -1,5 +1,11 @@
 # SECTION 17 — DEPLOYMENT SPECIFICATION
 
+> Deployment diagram, environment topology table and the ordered scaling path:
+> [§25.7](section-25-c4-architecture-diagrams.md#257-level-5--deployment). Four deployment details
+> this section leaves implicit (web bundle hosting, bucket CORS, observability ingress, `beat`
+> single-instance enforcement) are raised as AD-001..AD-004 in
+> [§25.9](section-25-c4-architecture-diagrams.md#259-architectural-points-surfaced-by-the-model).
+
 ### 17.1 Docker Compose (All Environments)
 
 The system is deployed entirely using Docker Compose. This is appropriate for development, staging, and production given the current scale. Horizontal scaling is achieved by running multiple API and worker replicas behind a reverse proxy.

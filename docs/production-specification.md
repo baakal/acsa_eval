@@ -32,6 +32,7 @@ This specification has been split into smaller files for readability.
 - [SECTION 22 — RECOMMENDED IMPLEMENTATION SEQUENCE](./production-specification/section-22-recommended-implementation-sequence.md)
 - [SECTION 23 — QUESTIONNAIRE SEED DATA SPECIFICATION](./production-specification/section-23-questionnaire-seed-data-specification.md)
 - [SECTION 24 — SAMPLE SCORING WORKED EXAMPLE](./production-specification/section-24-sample-scoring-worked-example.md)
+- [SECTION 25 — C4 ARCHITECTURE MODEL](./production-specification/section-25-c4-architecture-diagrams.md)
 - [APPENDIX A — REQUIREMENTS STATISTICS FROM PROTOTYPE CATALOGUE](./production-specification/appendix-a-requirements-statistics-from-prototype-catalogue.md)
 - [APPENDIX B — PROTOTYPE TECHNOLOGY STACK SUMMARY](./production-specification/appendix-b-prototype-technology-stack-summary.md)
 - [APPENDIX C — RECOMMENDED LIBRARY VERSIONS](./production-specification/appendix-c-recommended-library-versions.md)

@@ -28,6 +28,7 @@ This folder breaks the original monolithic production specification into smaller
 - [SECTION 22 — RECOMMENDED IMPLEMENTATION SEQUENCE](section-22-recommended-implementation-sequence.md)
 - [SECTION 23 — QUESTIONNAIRE SEED DATA SPECIFICATION](section-23-questionnaire-seed-data-specification.md)
 - [SECTION 24 — SAMPLE SCORING WORKED EXAMPLE](section-24-sample-scoring-worked-example.md)
+- [SECTION 25 — C4 ARCHITECTURE MODEL](section-25-c4-architecture-diagrams.md)
 - [APPENDIX A — REQUIREMENTS STATISTICS FROM PROTOTYPE CATALOGUE](appendix-a-requirements-statistics-from-prototype-catalogue.md)
 - [APPENDIX B — PROTOTYPE TECHNOLOGY STACK SUMMARY](appendix-b-prototype-technology-stack-summary.md)
 - [APPENDIX C — RECOMMENDED LIBRARY VERSIONS](appendix-c-recommended-library-versions.md)

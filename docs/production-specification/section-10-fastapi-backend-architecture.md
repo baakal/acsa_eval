@@ -1,5 +1,9 @@
 # SECTION 10 — FASTAPI BACKEND ARCHITECTURE
 
+> Component diagrams for this container: [§25.4.1 API](section-25-c4-architecture-diagrams.md#2541-api-application-components)
+> and [§25.4.2 Worker](section-25-c4-architecture-diagrams.md#2542-background-worker-components).
+> The layering rules in §10.2 are stated as enforceable invariants under §25.4.1.
+
 ### 10.1 Directory Structure
 
 ```

@@ -1,5 +1,9 @@
 # SECTION 22 — RECOMMENDED IMPLEMENTATION SEQUENCE
 
+> This sequence mapped onto the architecture — which containers and components each phase delivers,
+> the dependencies that force the ordering, and the configuration-driven risk in the Phase 4 items:
+> [§25.8 Build Sequence View](section-25-c4-architecture-diagrams.md#258-build-sequence-view--mapping-the-model-onto-section-22).
+
 ### Phase 1 — Foundation (Months 1–3)
 
 1. Docker Compose setup: PostgreSQL, Redis, Keycloak, MinIO, ClamAV, NGINX.

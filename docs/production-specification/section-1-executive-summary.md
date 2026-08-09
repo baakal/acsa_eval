@@ -39,6 +39,9 @@ PostgreSQL  Object Storage (MinIO / S3-compatible)
    Email / Notification service
 ```
 
+> Rendered as a full C4 model — system context, containers, components, code, dynamic and deployment
+> views — in [SECTION 25 — C4 ARCHITECTURE MODEL](section-25-c4-architecture-diagrams.md).
+
 Deployed as Docker containers using Docker Compose. All configuration is database-driven. Questionnaire content, scoring rules, workflow transitions, and role permissions are managed through the administration interface without code changes.
 
 ### 1.6 Prototype vs. Production Differences

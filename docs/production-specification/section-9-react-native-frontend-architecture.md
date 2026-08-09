@@ -1,5 +1,8 @@
 # SECTION 9 — REACT NATIVE FRONTEND ARCHITECTURE
 
+> Component diagram for this container: [§25.4.3](section-25-c4-architecture-diagrams.md#2543-client-application-components).
+> The autosave and offline sync collaboration is drawn in [§25.6.2](section-25-c4-architecture-diagrams.md#2562-response-autosave-with-optimistic-concurrency).
+
 ### 9.1 Technology Decisions
 
 | Concern | Choice | Rationale |

@@ -1,5 +1,8 @@
 # SECTION 16 — FILE AND OBJECT STORAGE SPECIFICATION
 
+> Sequence diagram of the full upload and scanning flow, including the quarantine branch and its
+> effect on submission validation: [§25.6.1](section-25-c4-architecture-diagrams.md#2561-evidence-upload-and-malware-scanning).
+
 ### 16.1 Upload Architecture
 
 ```
