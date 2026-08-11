@@ -1,18 +1,42 @@
 'use client';
 
 import Link from 'next/link';
+import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import useSWR from 'swr';
-import { listAdminAssessments } from '../lib/api-client';
+import { exportAdminAssessmentsWorkbook, listAdminAssessments } from '../lib/api-client';
 
 export default function AdminDashboardPage() {
   const { data: session, status } = useSession();
+  const [exportingWorkbook, setExportingWorkbook] = useState(false);
+  const [exportError, setExportError] = useState<string | null>(null);
   const token = session?.accessToken ?? '';
   const isAdmin = session?.roles?.includes('admin');
   const { data, error, isLoading } = useSWR(
     token && isAdmin ? ['admin-assessments', token] : null,
     ([, currentToken]) => listAdminAssessments(currentToken as string),
   );
+
+  async function handleWorkbookExport() {
+    if (!token) return;
+    setExportingWorkbook(true);
+    setExportError(null);
+    try {
+      const workbookBlob = await exportAdminAssessmentsWorkbook(token);
+      const exportUrl = URL.createObjectURL(workbookBlob);
+      const link = document.createElement('a');
+      link.href = exportUrl;
+      link.download = `admin-assessments-${new Date().toISOString().replace(/[:.]/g, '-')}.xlsx`;
+      document.body.append(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(exportUrl);
+    } catch {
+      setExportError('Unable to export assessments right now.');
+    } finally {
+      setExportingWorkbook(false);
+    }
+  }
 
   if (status === 'loading' || isLoading) {
     return <main className="adminPage"><div className="adminEmpty">Loading admin dashboard…</div></main>;
@@ -63,7 +87,11 @@ export default function AdminDashboardPage() {
             <span className="eyebrow">ASSESSMENT TABLE</span>
             <h2>All assessments</h2>
             <p>Open any row for a read-only assessment summary and audit timeline.</p>
+            {exportError ? <p>{exportError}</p> : null}
           </div>
+          <button onClick={handleWorkbookExport} disabled={exportingWorkbook}>
+            {exportingWorkbook ? 'Preparing XLSX…' : 'Export all as XLSX'}
+          </button>
         </div>
         <div className="tableScroll">
           <table className="adminTable">

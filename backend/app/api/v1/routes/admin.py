@@ -1,10 +1,13 @@
 """Admin reporting API."""
 
 import uuid
-from datetime import date, datetime
+from datetime import UTC, date, datetime
+from io import BytesIO
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.responses import StreamingResponse
+from openpyxl import Workbook
 from pydantic import BaseModel
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -13,7 +16,8 @@ from app.core.security import CurrentUser, require_admin
 from app.db.session import get_db
 from app.modules.assessments.models import Assessment, AssessmentSectionStatus, Response
 from app.modules.audit.models import AuditEvent
-from app.modules.organizations.models import Organization
+from app.modules.audit.service import record_audit_event
+from app.modules.organizations.models import Organization, User
 from app.modules.questionnaires.models import Requirement
 
 router = APIRouter(prefix="/admin", tags=["admin"])
@@ -73,6 +77,30 @@ class AdminAssessmentDetailOut(AdminAssessmentSummaryOut):
     section_statuses: list[AdminSectionStatusOut]
     audit_events: list[AdminAuditEventOut]
     total_audit_events: int
+
+
+async def _get_user_by_sub(db: AsyncSession, sub: str) -> User | None:
+    result = await db.execute(select(User).where(User.oauth_sub == sub))
+    return result.scalar_one_or_none()
+
+
+async def _load_assessments_with_organizations(
+    db: AsyncSession,
+) -> tuple[list[Assessment], dict[uuid.UUID, Organization]]:
+    result = await db.execute(
+        select(Assessment, Organization)
+        .join(Organization, Organization.id == Assessment.organization_id)
+        .where(
+            Assessment.deleted_at.is_(None),
+            Organization.deleted_at.is_(None),
+        )
+        .order_by(Assessment.created_at.desc())
+    )
+    rows = result.all()
+    return (
+        [assessment for assessment, _ in rows],
+        {organization.id: organization for _, organization in rows},
+    )
 
 
 async def _load_requirement_stats(
@@ -192,21 +220,75 @@ async def _build_summary_rows(
     return summaries
 
 
+def _build_admin_export_workbook(
+    assessments: list[AdminAssessmentSummaryOut],
+) -> BytesIO:
+    workbook = Workbook()
+    sheet = workbook.active
+    sheet.title = "Assessments"
+    sheet.append(
+        [
+            "Assessment",
+            "Organization",
+            "Country",
+            "Status",
+            "Completion (%)",
+            "Completed Requirements",
+            "Total Requirements",
+            "Compliance (%)",
+            "Created At",
+            "Due Date",
+            "Submitted At",
+            "Approved At",
+        ]
+    )
+    for assessment in assessments:
+        sheet.append(
+            [
+                assessment.name,
+                assessment.organization_name,
+                assessment.country_code or "",
+                assessment.status,
+                assessment.completion_percent,
+                assessment.completed_requirements,
+                assessment.total_requirements,
+                assessment.compliance_score,
+                assessment.created_at.isoformat(),
+                assessment.due_date.isoformat() if assessment.due_date else "",
+                assessment.submitted_at.isoformat() if assessment.submitted_at else "",
+                assessment.approved_at.isoformat() if assessment.approved_at else "",
+            ]
+        )
+    output = BytesIO()
+    workbook.save(output)
+    output.seek(0)
+    return output
+
+
 @router.get("/assessments", response_model=list[AdminAssessmentSummaryOut])
 async def list_admin_assessments(db: Db, current: AdminAuth):  # noqa: ARG001
-    result = await db.execute(
-        select(Assessment, Organization)
-        .join(Organization, Organization.id == Assessment.organization_id)
-        .where(
-            Assessment.deleted_at.is_(None),
-            Organization.deleted_at.is_(None),
-        )
-        .order_by(Assessment.created_at.desc())
-    )
-    rows = result.all()
-    assessments = [assessment for assessment, _ in rows]
-    organizations = {organization.id: organization for _, organization in rows}
+    assessments, organizations = await _load_assessments_with_organizations(db)
     return await _build_summary_rows(db, assessments, organizations)
+
+
+@router.get("/assessments/export")
+async def export_admin_assessments(db: Db, current: AdminAuth):
+    assessments, organizations = await _load_assessments_with_organizations(db)
+    summaries = await _build_summary_rows(db, assessments, organizations)
+    workbook = _build_admin_export_workbook(summaries)
+    actor = await _get_user_by_sub(db, current.sub)
+    await record_audit_event(
+        db,
+        event_type="admin.assessments_exported",
+        actor_id=actor.id if actor else None,
+        details={"assessment_count": len(summaries), "format": "xlsx"},
+    )
+    filename = f"admin-assessments-{datetime.now(UTC).strftime('%Y%m%d-%H%M%S')}.xlsx"
+    return StreamingResponse(
+        workbook,
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
 
 
 @router.get("/assessments/{assessment_id}", response_model=AdminAssessmentDetailOut)
