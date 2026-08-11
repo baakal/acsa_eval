@@ -13,7 +13,7 @@ from app.db.base import Base, TimestampMixin, UUIDPrimaryKeyMixin
 class User(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     __tablename__ = "users"
 
-    keycloak_sub: Mapped[str] = mapped_column(String(255), unique=True, nullable=False)
+    oauth_sub: Mapped[str] = mapped_column(String(255), unique=True, nullable=False)
     email: Mapped[str] = mapped_column(String(255), unique=True, nullable=False)
     full_name: Mapped[str] = mapped_column(String(255), nullable=False)
     preferred_lang: Mapped[str] = mapped_column(String(2), nullable=False, default="en")

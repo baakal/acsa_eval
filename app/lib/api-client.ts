@@ -1,6 +1,6 @@
 /**
  * Typed API client for the ACSA FastAPI backend.
- * Attaches the Keycloak access token from next-auth to every request.
+ * Attaches the HS256 access token (signed by next-auth) to every request.
  */
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000';

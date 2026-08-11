@@ -76,7 +76,7 @@ class SectionStatusUpsert(BaseModel):
 
 
 async def _get_user(session: AsyncSession, sub: str) -> User | None:
-    result = await session.execute(select(User).where(User.keycloak_sub == sub))
+    result = await session.execute(select(User).where(User.oauth_sub == sub))
     return result.scalar_one_or_none()
 
 

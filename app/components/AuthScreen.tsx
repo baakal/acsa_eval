@@ -26,12 +26,18 @@ export function AuthScreen() {
         <div className="authBox">
           <span className="eyebrow">SECURE WORKSPACE</span>
           <h2>Welcome to ACSA Evaluation</h2>
-          <p>Sign in with your ACSA account to access your workspace.</p>
+          <p>Sign in with your organisation account to access your workspace.</p>
           <button
             className="authSubmit"
-            onClick={() => signIn('keycloak')}
+            onClick={() => signIn('google')}
           >
-            Sign in with ACSA Identity
+            Sign in with Google
+          </button>
+          <button
+            className="authSubmit"
+            onClick={() => signIn('azure-ad')}
+          >
+            Sign in with Microsoft
           </button>
         </div>
       </section>

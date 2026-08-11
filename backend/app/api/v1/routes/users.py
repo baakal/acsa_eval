@@ -1,4 +1,4 @@
-"""Users API — profile and user sync from Keycloak."""
+"""Users API — profile."""
 
 import uuid
 from datetime import datetime, timezone
@@ -35,12 +35,12 @@ class UserOut(BaseModel):
 async def get_current_user_profile(db: Db, current: Auth):
     """Return the current user's profile, creating a DB record if first login."""
     result = await db.execute(
-        select(User).where(User.keycloak_sub == current.sub)
+        select(User).where(User.oauth_sub == current.sub)
     )
     user = result.scalar_one_or_none()
     if user is None:
         user = User(
-            keycloak_sub=current.sub,
+            oauth_sub=current.sub,
             email=current.email,
             full_name=current.name or current.preferred_username or current.email,
         )

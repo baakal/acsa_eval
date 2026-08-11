@@ -22,7 +22,7 @@ logger = structlog.get_logger(__name__)
 # Falls back to the prototype app directory for local dev.
 _CATALOGUE_PATHS = [
     Path("/catalogue.json"),
-    Path(__file__).parents[5] / "app" / "catalogue.json",
+    Path(__file__).parents[4] / "app" / "catalogue.json",
 ]
 
 
@@ -40,7 +40,7 @@ async def seed(session: AsyncSession) -> None:
     # ── Seed user (system account) ────────────────────────────────────────────
     system_user_sub = "system"
     result = await session.execute(
-        text("SELECT id FROM users WHERE keycloak_sub = :sub"),
+        text("SELECT id FROM users WHERE oauth_sub = :sub"),
         {"sub": system_user_sub},
     )
     row = result.first()
@@ -52,7 +52,7 @@ async def seed(session: AsyncSession) -> None:
         await session.execute(
             text(
                 """
-                INSERT INTO users (id, keycloak_sub, email, full_name, preferred_lang)
+                INSERT INTO users (id, oauth_sub, email, full_name, preferred_lang)
                 VALUES (:id, :sub, :email, :name, 'en')
                 """
             ),

@@ -52,14 +52,13 @@ class InviteUserRequest(BaseModel):
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
 async def _get_or_create_user(session: AsyncSession, current: CurrentUser) -> User:
-    """Upsert a User row based on the Keycloak token claims."""
     result = await session.execute(
-        select(User).where(User.keycloak_sub == current.sub)
+        select(User).where(User.oauth_sub == current.sub)
     )
     user = result.scalar_one_or_none()
     if user is None:
         user = User(
-            keycloak_sub=current.sub,
+            oauth_sub=current.sub,
             email=current.email,
             full_name=current.name or current.preferred_username or current.email,
             preferred_lang="en",

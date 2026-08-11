@@ -35,34 +35,6 @@ services:
       retries: 5
     restart: unless-stopped
 
-  # ── Keycloak ─────────────────────────────────────────────────────────────────
-  keycloak:
-    image: quay.io/keycloak/keycloak:24.0
-    command: start-dev --import-realm
-    environment:
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
-      KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://db:5432/acsa_keycloak
-      KC_DB_USERNAME: acsa
-      KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
-      KC_HOSTNAME_STRICT: "false"
-      KC_HTTP_ENABLED: "true"
-    volumes:
-      - ./infra/keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
-    ports:
-      - "8080:8080"
-    healthcheck:
-      test: ["CMD-SHELL", "curl -sf http://localhost:8080/health/ready || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 10
-      start_period: 60s
-    restart: unless-stopped
-    depends_on:
-      db:
-        condition: service_healthy
-
   # ── MinIO (S3-compatible object storage) ────────────────────────────────────
   minio:
     image: minio/minio:latest
@@ -107,10 +79,7 @@ services:
     environment:
       DATABASE_URL: postgresql+asyncpg://acsa:${POSTGRES_PASSWORD}@db:5432/acsa_eval
       REDIS_URL: redis://redis:6379/0
-      KEYCLOAK_URL: http://keycloak:8080
-      KEYCLOAK_REALM: acsa
-      KEYCLOAK_CLIENT_ID: acsa-api
-      KEYCLOAK_CLIENT_SECRET: ${KEYCLOAK_CLIENT_SECRET}
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
       OBJECT_STORAGE_ENDPOINT: http://minio:9000
       OBJECT_STORAGE_ACCESS_KEY: ${MINIO_ACCESS_KEY}
       OBJECT_STORAGE_SECRET_KEY: ${MINIO_SECRET_KEY}
@@ -126,6 +95,8 @@ services:
       SMTP_USER: ${SMTP_USER:-}
       SMTP_PASSWORD: ${SMTP_PASSWORD:-}
       EMAIL_FROM: ${EMAIL_FROM:-noreply@acsa.local}
+    volumes:
+      - ./app/catalogue.json:/catalogue.json:ro
     ports:
       - "8000:8000"
     healthcheck:

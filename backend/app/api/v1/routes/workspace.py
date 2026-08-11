@@ -54,11 +54,11 @@ async def bootstrap_workspace(db: Db, current: Auth):
     """Idempotently provision a personal workspace for the authenticated user."""
 
     # 1. Get or create user row ────────────────────────────────────────────────
-    result = await db.execute(select(User).where(User.keycloak_sub == current.sub))
+    result = await db.execute(select(User).where(User.oauth_sub == current.sub))
     user = result.scalar_one_or_none()
     if user is None:
         user = User(
-            keycloak_sub=current.sub,
+            oauth_sub=current.sub,
             email=current.email,
             full_name=current.name or current.preferred_username or current.email,
         )

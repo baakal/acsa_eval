@@ -24,22 +24,9 @@ class Settings(BaseSettings):
     # ── Redis ──────────────────────────────────────────────────────────────────
     REDIS_URL: str = "redis://localhost:6379/0"
 
-    # ── Keycloak ──────────────────────────────────────────────────────────────
-    KEYCLOAK_URL: str = "http://localhost:8080"
-    KEYCLOAK_REALM: str = "acsa"
-    KEYCLOAK_CLIENT_ID: str = "acsa-api"
-    KEYCLOAK_CLIENT_SECRET: str = Field(default="")
-
-    @property
-    def keycloak_jwks_url(self) -> str:
-        return (
-            f"{self.KEYCLOAK_URL}/realms/{self.KEYCLOAK_REALM}"
-            "/protocol/openid-connect/certs"
-        )
-
-    @property
-    def keycloak_issuer(self) -> str:
-        return f"{self.KEYCLOAK_URL}/realms/{self.KEYCLOAK_REALM}"
+    # ── Auth ──────────────────────────────────────────────────────────────────
+    # Must match NEXTAUTH_SECRET in the frontend .env.local
+    NEXTAUTH_SECRET: str = Field(default="dev-secret-change-me")
 
     # ── Object storage ────────────────────────────────────────────────────────
     OBJECT_STORAGE_ENDPOINT: str = "http://localhost:9000"

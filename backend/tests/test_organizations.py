@@ -13,7 +13,7 @@ from app.main import app
 # ── Fixtures ──────────────────────────────────────────────────────────────────
 
 MOCK_USER = MagicMock(
-    sub="test-keycloak-sub",
+    sub="test-oauth-sub",
     email="test@example.com",
     name="Test User",
     preferred_username="testuser",
@@ -24,7 +24,7 @@ MOCK_USER.has_role = lambda *roles: any(r in MOCK_USER.roles for r in roles)
 MOCK_USER.require_role = lambda *roles: None  # no-op in tests
 
 MOCK_ADMIN = MagicMock(
-    sub="admin-keycloak-sub",
+    sub="admin-oauth-sub",
     email="admin@acsa.org",
     name="Admin User",
     preferred_username="admin",

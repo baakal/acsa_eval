@@ -11,15 +11,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libcairo2 \
     libpango-1.0-0 \
     libpangocairo-1.0-0 \
-    libgdk-pixbuf2.0-0 \
+    libgdk-pixbuf-xlib-2.0-0 \
     libxml2 \
     libxslt1.1 \
     && rm -rf /var/lib/apt/lists/*
 
 COPY pyproject.toml .
-RUN pip install --no-cache-dir -e "."
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 
 COPY . .
+RUN pip install --no-cache-dir .
 
 # Healthcheck
 HEALTHCHECK --interval=15s --timeout=5s --start-period=30s --retries=3 \

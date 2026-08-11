@@ -1,21 +1,17 @@
-"""JWT validation and Keycloak OIDC integration.
+"""JWT validation for next-auth HS256 tokens.
 
-Tokens are validated against the Keycloak JWKS endpoint.
-The decoded claims are mapped to an internal CurrentUser object which is
-injected via FastAPI dependency injection.
+The frontend (next-auth) signs a compact JWT with NEXTAUTH_SECRET (HS256).
+The backend verifies the same secret — no external JWKS endpoint required.
 """
 
 from __future__ import annotations
 
-import time
-from typing import Any
-
-import httpx
-import structlog
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jose import JWTError, jwt
 from pydantic import BaseModel
+
+import structlog
 
 from app.core.config import settings
 
@@ -23,37 +19,16 @@ logger = structlog.get_logger(__name__)
 
 _bearer = HTTPBearer(auto_error=True)
 
-# Simple in-memory JWKS cache (refreshed every 5 minutes)
-_jwks_cache: dict[str, Any] = {}
-_jwks_fetched_at: float = 0.0
-_JWKS_TTL: float = 300.0  # seconds
-
-
-async def _get_jwks() -> dict[str, Any]:
-    global _jwks_cache, _jwks_fetched_at
-    now = time.monotonic()
-    if _jwks_cache and (now - _jwks_fetched_at) < _JWKS_TTL:
-        return _jwks_cache
-    async with httpx.AsyncClient(timeout=10) as client:
-        resp = await client.get(settings.keycloak_jwks_url)
-        resp.raise_for_status()
-        _jwks_cache = resp.json()
-        _jwks_fetched_at = now
-        logger.info("jwks_refreshed")
-        return _jwks_cache
-
 
 # ── Public models ─────────────────────────────────────────────────────────────
 
 class CurrentUser(BaseModel):
-    """Decoded, validated Keycloak token claims."""
+    """Decoded, validated token claims."""
 
-    sub: str                          # Keycloak subject (UUID)
+    sub: str
     email: str
     name: str = ""
-    preferred_username: str = ""
-    roles: list[str] = []             # realm roles extracted from token
-    email_verified: bool = False
+    roles: list[str] = []
 
     def has_role(self, *roles: str) -> bool:
         return any(r in self.roles for r in roles)
@@ -73,14 +48,11 @@ async def get_current_user(
 ) -> CurrentUser:
     token = credentials.credentials
     try:
-        jwks = await _get_jwks()
         payload = jwt.decode(
             token,
-            jwks,
-            algorithms=["RS256"],
-            audience=settings.KEYCLOAK_CLIENT_ID,
-            issuer=settings.keycloak_issuer,
-            options={"verify_at_hash": False},
+            settings.NEXTAUTH_SECRET,
+            algorithms=["HS256"],
+            options={"verify_aud": False},
         )
     except JWTError as exc:
         logger.warning("jwt_validation_failed", error=str(exc))
@@ -90,17 +62,11 @@ async def get_current_user(
             headers={"WWW-Authenticate": "Bearer"},
         ) from exc
 
-    # Extract realm roles from token claim structure
-    realm_access = payload.get("realm_access", {})
-    roles = realm_access.get("roles", [])
-
     return CurrentUser(
         sub=payload["sub"],
         email=payload.get("email", ""),
         name=payload.get("name", ""),
-        preferred_username=payload.get("preferred_username", ""),
-        roles=roles,
-        email_verified=payload.get("email_verified", False),
+        roles=payload.get("roles", []),
     )
 
 
