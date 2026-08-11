@@ -190,3 +190,16 @@ export async function getAdminAssessment(
 ): Promise<AdminAssessmentDetailOut> {
   return request<AdminAssessmentDetailOut>(`/api/v1/admin/assessments/${assessmentId}`, token);
 }
+
+export async function exportAdminAssessmentsWorkbook(token: string): Promise<Blob> {
+  const response = await fetch(`${API_BASE}/api/v1/admin/assessments/export`, {
+    headers: {
+      Authorization: 'Bearer ' + token,
+    },
+  });
+  if (!response.ok) {
+    const detail = await response.text().catch(() => '');
+    throw new ApiError(response.status, detail || `HTTP ${response.status}`);
+  }
+  return response.blob();
+}
