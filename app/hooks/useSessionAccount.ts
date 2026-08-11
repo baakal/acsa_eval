@@ -19,7 +19,7 @@ export function useSessionAccount() {
   }
 
   const roles = session.roles ?? [];
-  const isCountry = roles.includes('country') || roles.includes('reviewer');
+  const isCountry = roles.includes('country') || roles.includes('reviewer') || roles.includes('admin');
   const role: SessionAccount['role'] = isCountry ? 'Country' : 'Solution Provider';
 
   const account: SessionAccount = {
@@ -33,4 +33,3 @@ export function useSessionAccount() {
 
   return { account, loaded: true };
 }
-

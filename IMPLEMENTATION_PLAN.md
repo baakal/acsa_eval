@@ -325,7 +325,7 @@ Update this table as sprints are completed.
 | 0 — Foundations | ✅ Complete | Components split, shared hooks/libs added, tests scaffolded, and CI workflow created |
 | 1 — Data Portability | ✅ Complete | JSON export/import, workbook-based XLSX export, and print/PDF analytics support added |
 | 2 — Backend: Database & API | ✅ Complete | FastAPI responses + section-status routes, workspace bootstrap, next-auth Keycloak OIDC, SWR-backed hooks |
-| 3 — Role Enforcement & Collaboration | ⬜ Not started | |
-| 4 — Admin & Reporting | ⬜ Not started | |
+| 3 — Role Enforcement & Collaboration | 🟡 In progress | Role-gated assessment UI and server-side section locking added; shared invites, reviewer discussion persistence, and notifications still pending |
+| 4 — Admin & Reporting | 🟡 In progress | Admin-only assessment dashboard, read-only assessment detail view, and audit event tracking added |
 | 5 — UX, Accessibility & Mobile | ⬜ Not started | |
 | 6 — DevOps & Production Readiness | ⬜ Not started | |

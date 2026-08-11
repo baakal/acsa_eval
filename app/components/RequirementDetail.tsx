@@ -20,6 +20,8 @@ type RequirementDetailProps = {
   activeTab: ResponseTab;
   commentDraft: string;
   categorySubmission?: CategorySubmission;
+  canEditResponse: boolean;
+  canReview: boolean;
   onSetActiveTab: (tab: ResponseTab) => void;
   onSetCommentDraft: (value: string) => void;
   onUpdateAnswer: (patch: Partial<RequirementAnswer>) => void;
@@ -41,6 +43,8 @@ export function RequirementDetail({
   activeTab,
   commentDraft,
   categorySubmission,
+  canEditResponse,
+  canReview,
   onSetActiveTab,
   onSetCommentDraft,
   onUpdateAnswer,
@@ -67,7 +71,7 @@ export function RequirementDetail({
           </em>
         </div>
         <div className="canvasTopActions">
-          <button className="submitCategoryBtn" onClick={onSubmitCategory}>
+          <button className="submitCategoryBtn" onClick={onSubmitCategory} disabled={!canEditResponse}>
             {categorySubmission?.status === 'Submitted' || categorySubmission?.status === 'Approved'
               ? 'Resubmit category'
               : 'Submit category'}
@@ -126,6 +130,7 @@ export function RequirementDetail({
                     type="radio"
                     name={`compliance-${selectedRequirement.id}`}
                     checked={currentAnswer.compliance === option.value}
+                    disabled={!canEditResponse}
                     onChange={() => onUpdateAnswer({ compliance: option.value })}
                   />
                   <kbd>{index + 1}</kbd>
@@ -151,6 +156,7 @@ export function RequirementDetail({
                     type="radio"
                     name={`mode-${selectedRequirement.id}`}
                     checked={currentAnswer.mode === mode}
+                    disabled={!canEditResponse}
                     onChange={() => onUpdateAnswer({ mode })}
                   />
                   {mode}
@@ -174,6 +180,7 @@ export function RequirementDetail({
                     type="radio"
                     name={`dependency-${selectedRequirement.id}`}
                     checked={currentAnswer.dependsOnOtherSystems === choice.value}
+                    disabled={!canEditResponse}
                     onChange={() =>
                       onUpdateAnswer({
                         dependsOnOtherSystems: choice.value,
@@ -190,6 +197,7 @@ export function RequirementDetail({
                 <small>List each system needed to fulfil this requirement.</small>
                 <textarea
                   value={currentAnswer.dependentSystems}
+                  disabled={!canEditResponse}
                   onChange={(event) => onUpdateAnswer({ dependentSystems: event.target.value })}
                   placeholder={'e.g. National ID System\nPayment Gateway\nSMS Gateway'}
                   rows={3}
@@ -203,18 +211,27 @@ export function RequirementDetail({
           <button className={activeTab === 'response' ? 'active' : ''} onClick={() => onSetActiveTab('response')}>
             Evidence &amp; notes
           </button>
-          <button className={activeTab === 'review' ? 'active' : ''} onClick={() => onSetActiveTab('review')}>
-            Review
-            {currentAnswer.reviewStatus !== 'Not Reviewed' && (
-              <span className={`warnDot ${currentAnswer.reviewStatus === 'Approved' ? 'approved' : 'changes'}`} />
-            )}
-          </button>
+          {canReview && (
+            <button className={activeTab === 'review' ? 'active' : ''} onClick={() => onSetActiveTab('review')}>
+              Review
+              {currentAnswer.reviewStatus !== 'Not Reviewed' && (
+                <span className={`warnDot ${currentAnswer.reviewStatus === 'Approved' ? 'approved' : 'changes'}`} />
+              )}
+            </button>
+          )}
           <button className={activeTab === 'discussion' ? 'active' : ''} onClick={() => onSetActiveTab('discussion')}>
             Discussion <span className="badge">{currentAnswer.comments.length}</span>
           </button>
         </div>
 
         <div className={`tabPanel ${activeTab === 'response' ? 'active' : ''}`}>
+          {!canEditResponse && (
+            <div className="reviewLocked">
+              {account.role === 'Country'
+                ? 'Reviewer access is read-only for assessment responses.'
+                : 'This category is locked while it is under review.'}
+            </div>
+          )}
           <label className="systemsField evidenceField">
             <span>
               Evidence <em>Provide wherever possible</em>
@@ -224,6 +241,7 @@ export function RequirementDetail({
             </small>
             <textarea
               value={currentAnswer.evidence}
+              disabled={!canEditResponse}
               onChange={(event) => onUpdateAnswer({ evidence: event.target.value })}
               placeholder="Describe the evidence or paste links to supporting documentation"
               rows={4}
@@ -239,7 +257,7 @@ export function RequirementDetail({
             </div>
             <label className="uploadButton">
               ＋ Upload documents
-              <input type="file" multiple onChange={onUploadEvidence} />
+              <input type="file" multiple onChange={onUploadEvidence} disabled={!canEditResponse} />
             </label>
             {currentAnswer.attachments.length > 0 && (
               <div className="attachmentList">
@@ -255,6 +273,7 @@ export function RequirementDetail({
                     </a>
                     <button
                       aria-label={`Remove ${attachment.name}`}
+                      disabled={!canEditResponse}
                       onClick={() =>
                         onUpdateAnswer({
                           attachments: currentAnswer.attachments.filter(
@@ -276,6 +295,7 @@ export function RequirementDetail({
             <small>Capture implementation assumptions, constraints, and clarifications for reviewers.</small>
             <textarea
               value={currentAnswer.notes}
+              disabled={!canEditResponse}
               onChange={(event) => onUpdateAnswer({ notes: event.target.value })}
               placeholder="Add implementation notes, assumptions, or clarifications"
               rows={4}
@@ -314,6 +334,7 @@ export function RequirementDetail({
                 Reviewer feedback
                 <textarea
                   value={currentAnswer.reviewFeedback}
+                  disabled={!canReview}
                   onChange={(event) => onUpdateAnswer({ reviewFeedback: event.target.value })}
                   placeholder="Explain what should be changed or provide review feedback"
                   rows={3}

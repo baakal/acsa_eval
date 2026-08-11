@@ -16,7 +16,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.security import CurrentUser, get_current_user
 from app.db.session import get_db
 from app.modules.assessments.models import Assessment, AssessmentSectionStatus, Response
-from app.modules.organizations.models import Organization, OrganizationMember, User
+from app.modules.audit.service import record_audit_event
+from app.modules.organizations.models import OrganizationMember, User
 from app.modules.questionnaires.models import Requirement
 
 router = APIRouter(tags=["responses"])
@@ -78,6 +79,10 @@ class SectionStatusUpsert(BaseModel):
 async def _get_user(session: AsyncSession, sub: str) -> User | None:
     result = await session.execute(select(User).where(User.oauth_sub == sub))
     return result.scalar_one_or_none()
+
+
+def _is_reviewer(current: CurrentUser) -> bool:
+    return current.has_role("country", "reviewer", "admin")
 
 
 async def _assert_assessment_access(
@@ -196,6 +201,52 @@ async def upsert_response(
         )
     )
     response = result.scalar_one_or_none()
+    previous_review_outcome = response.review_outcome if response else None
+    existing_fields = {
+        "compliance_code": response.compliance_code if response else None,
+        "operating_mode": response.operating_mode if response else None,
+        "depends_on_systems": response.depends_on_systems if response else None,
+        "dependent_systems": response.dependent_systems if response else None,
+        "evidence_text": response.evidence_text if response else None,
+        "notes": response.notes if response else None,
+        "is_complete": response.is_complete if response else False,
+    }
+    requested_fields = {
+        "compliance_code": body.compliance_code,
+        "operating_mode": body.operating_mode,
+        "depends_on_systems": body.depends_on_systems,
+        "dependent_systems": body.dependent_systems,
+        "evidence_text": body.evidence_text,
+        "notes": body.notes,
+        "is_complete": body.is_complete,
+    }
+    response_content_changed = requested_fields != existing_fields
+
+    section_status_result = await db.execute(
+        select(AssessmentSectionStatus).where(
+            AssessmentSectionStatus.assessment_id == assessment_id,
+            AssessmentSectionStatus.section_stable_id == requirement.section.stable_id,
+        )
+    )
+    section_status = section_status_result.scalar_one_or_none()
+
+    if _is_reviewer(current):
+        if response_content_changed:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Reviewer accounts cannot edit assessment responses.",
+            )
+    else:
+        if body.review_outcome not in (None, previous_review_outcome):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Solution provider accounts cannot change review decisions.",
+            )
+        if section_status and section_status.status in {"Submitted", "Approved"} and response_content_changed:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="This section is locked until a reviewer requests changes.",
+            )
 
     if response is None:
         response = Response(
@@ -218,6 +269,25 @@ async def upsert_response(
 
     await db.flush()
     await db.refresh(response)
+    event_type = (
+        "response.reviewed"
+        if previous_review_outcome != body.review_outcome
+        else "response.updated"
+    )
+    await record_audit_event(
+        db,
+        event_type=event_type,
+        actor_id=user.id,
+        organization_id=assessment.organization_id,
+        assessment_id=assessment.id,
+        resource_type="response",
+        resource_id=response.id,
+        details={
+            "requirement_stable_id": requirement_stable_id,
+            "review_outcome": body.review_outcome,
+            "is_complete": body.is_complete,
+        },
+    )
 
     return ResponseOut(
         id=response.id,
@@ -283,6 +353,19 @@ async def upsert_section_status(
         )
     )
     section_status = result.scalar_one_or_none()
+    previous_status = section_status.status if section_status else None
+
+    if _is_reviewer(current):
+        if body.status not in {"Approved", "Changes Requested"}:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Reviewer accounts can only record review outcomes.",
+            )
+    elif body.status not in {"Draft", "Submitted"}:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Solution provider accounts can only manage draft and submitted states.",
+        )
 
     if section_status is None:
         section_status = AssessmentSectionStatus(
@@ -299,5 +382,20 @@ async def upsert_section_status(
 
     await db.flush()
     await db.refresh(section_status)
+    if previous_status != body.status:
+        await record_audit_event(
+            db,
+            event_type="section.status_changed",
+            actor_id=user.id,
+            organization_id=assessment.organization_id,
+            assessment_id=assessment.id,
+            resource_type="section_status",
+            resource_id=section_status.id,
+            details={
+                "section_stable_id": section_stable_id,
+                "from_status": previous_status,
+                "to_status": body.status,
+            },
+        )
 
     return SectionStatusOut.model_validate(section_status)

@@ -12,6 +12,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.security import CurrentUser, get_current_user
 from app.db.session import get_db
 from app.modules.assessments.models import Assessment
+from app.modules.audit.service import record_audit_event
 from app.modules.organizations.models import Organization, OrganizationMember, User
 
 router = APIRouter(prefix="/assessments", tags=["assessments"])
@@ -126,6 +127,16 @@ async def create_assessment(body: AssessmentCreate, db: Db, current: Auth):
     )
     db.add(assessment)
     await db.flush()
+    await record_audit_event(
+        db,
+        event_type="assessment.created",
+        actor_id=user.id,
+        organization_id=assessment.organization_id,
+        assessment_id=assessment.id,
+        resource_type="assessment",
+        resource_id=assessment.id,
+        details={"status": assessment.status, "name": assessment.name},
+    )
 
     return AssessmentOut.model_validate(assessment)
 
@@ -178,5 +189,15 @@ async def submit_assessment(assessment_id: uuid.UUID, db: Db, current: Auth):
 
     assessment.status = "SUBMITTED"
     assessment.submitted_at = datetime.now(timezone.utc)
+    await record_audit_event(
+        db,
+        event_type="assessment.submitted",
+        actor_id=user.id,
+        organization_id=assessment.organization_id,
+        assessment_id=assessment.id,
+        resource_type="assessment",
+        resource_id=assessment.id,
+        details={"status": assessment.status},
+    )
 
     return AssessmentOut.model_validate(assessment)

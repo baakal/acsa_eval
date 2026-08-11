@@ -11,6 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.security import CurrentUser, get_current_user, require_admin
 from app.db.session import get_db
+from app.modules.audit.service import record_audit_event
 from app.modules.organizations.models import Organization, OrganizationMember, User
 
 router = APIRouter(prefix="/organizations", tags=["organizations"])
@@ -113,6 +114,15 @@ async def register_organization(
         invited_by=user.id,
     )
     db.add(member)
+    await record_audit_event(
+        db,
+        event_type="organization.registered",
+        actor_id=user.id,
+        organization_id=org.id,
+        resource_type="organization",
+        resource_id=org.id,
+        details={"name": org.name, "status": org.status},
+    )
 
     return OrganizationOut.model_validate(org)
 
@@ -155,6 +165,15 @@ async def approve_organization(org_id: uuid.UUID, db: Db, current: AdminAuth):
     org.status = "APPROVED"
     org.approved_by = approver.id
     org.approved_at = datetime.now(timezone.utc)
+    await record_audit_event(
+        db,
+        event_type="organization.approved",
+        actor_id=approver.id,
+        organization_id=org.id,
+        resource_type="organization",
+        resource_id=org.id,
+        details={"status": org.status},
+    )
 
     return OrganizationOut.model_validate(org)
 
@@ -173,5 +192,15 @@ async def reject_organization(org_id: uuid.UUID, db: Db, current: AdminAuth):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Organization not found.")
 
     org.status = "REJECTED"
+    approver = await _get_or_create_user(db, current)
+    await record_audit_event(
+        db,
+        event_type="organization.rejected",
+        actor_id=approver.id,
+        organization_id=org.id,
+        resource_type="organization",
+        resource_id=org.id,
+        details={"status": org.status},
+    )
 
     return OrganizationOut.model_validate(org)

@@ -137,3 +137,55 @@ export async function upsertSectionStatus(
     { method: 'PUT', body: JSON.stringify(body) },
   );
 }
+
+// ── Admin reporting ────────────────────────────────────────────────────────────
+
+export interface AdminAssessmentSummaryOut {
+  id: string;
+  organization_id: string;
+  organization_name: string;
+  country_code: string | null;
+  questionnaire_version_id: string;
+  name: string;
+  status: string;
+  due_date: string | null;
+  submitted_at: string | null;
+  approved_at: string | null;
+  created_at: string;
+  completed_requirements: number;
+  total_requirements: number;
+  completion_percent: number;
+  compliance_score: number;
+}
+
+export interface AdminSectionStatusOut {
+  section_stable_id: string;
+  status: string;
+  submitted_at: string | null;
+  updated_at: string;
+}
+
+export interface AdminAuditEventOut {
+  id: string;
+  event_type: string;
+  resource_type: string | null;
+  resource_id: string | null;
+  details: Record<string, unknown> | null;
+  occurred_at: string;
+}
+
+export interface AdminAssessmentDetailOut extends AdminAssessmentSummaryOut {
+  section_statuses: AdminSectionStatusOut[];
+  audit_events: AdminAuditEventOut[];
+}
+
+export async function listAdminAssessments(token: string): Promise<AdminAssessmentSummaryOut[]> {
+  return request<AdminAssessmentSummaryOut[]>('/api/v1/admin/assessments', token);
+}
+
+export async function getAdminAssessment(
+  token: string,
+  assessmentId: string,
+): Promise<AdminAssessmentDetailOut> {
+  return request<AdminAssessmentDetailOut>(`/api/v1/admin/assessments/${assessmentId}`, token);
+}
