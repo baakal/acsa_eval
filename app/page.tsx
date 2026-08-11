@@ -74,6 +74,14 @@ export default function Home() {
   const currentAnswer = selectedRequirement ? getAnswer(selectedRequirement.id) : getAnswer('');
 
   const scoring = useScoring(categories, catalogue, answers, categorySubmissions);
+  const canReview = account?.role === 'Country';
+  const resolvedActiveTab = !canReview && activeTab === 'review' ? 'response' : activeTab;
+  const canEditResponse =
+    !!account &&
+    account.role === 'Solution Provider' &&
+    (!categorySubmissions[selectedCategory] ||
+      categorySubmissions[selectedCategory].status === 'Draft' ||
+      categorySubmissions[selectedCategory].status === 'Changes Requested');
   const functionalCount = catalogue.filter((item) => item.type === 'Functional').length;
   const nonFunctionalCount = catalogue.length - functionalCount;
   const mustCount = catalogue.filter((item) => item.priority === 'Must').length;
@@ -171,6 +179,7 @@ export default function Home() {
   }
 
   function submitCategory() {
+    if (!canEditResponse) return;
     const incomplete = categoryRequirements.filter((requirement) => !isAnswerComplete(answers[requirement.id]));
     if (incomplete.length) {
       window.alert(
@@ -186,6 +195,10 @@ export default function Home() {
   }
 
   async function uploadEvidence(event: ChangeEvent<HTMLInputElement>) {
+    if (!canEditResponse) {
+      event.target.value = '';
+      return;
+    }
     const files = Array.from(event.target.files ?? []);
     if (!files.length) return;
     const oversized = files.find((file) => file.size > MAX_UPLOAD_BYTES);
@@ -236,6 +249,7 @@ export default function Home() {
   }
 
   function changeReviewStatus(status: RequirementAnswer['reviewStatus']) {
+    if (!canReview) return;
     updateAnswer({ reviewStatus: status });
     if (status === 'Changes Requested') {
       setCategorySubmissions({
@@ -353,7 +367,7 @@ export default function Home() {
         event.preventDefault();
         jumpToNextIncomplete();
       }
-      if (['1', '2', '3', '4'].includes(event.key) && selectedRequirement) {
+      if (canEditResponse && ['1', '2', '3', '4'].includes(event.key) && selectedRequirement) {
         updateAnswer({
           compliance:
             ['Fully Meets', 'Meets through Configuration', 'Customization Required', 'Not Available'][
@@ -364,7 +378,7 @@ export default function Home() {
     }
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  });
+  }, [canEditResponse, selectedRequirement, workspaceView]);
 
   if (!hydrated || sessionStatus === 'loading' || (sessionStatus === 'authenticated' && (workspaceLoading || !sessionLoaded))) {
     return (
@@ -499,9 +513,11 @@ export default function Home() {
             search={search}
             filter={filter}
             filterCounts={filterCounts}
-            activeTab={activeTab}
+            activeTab={resolvedActiveTab}
             commentDraft={commentDraft}
             currentAnswer={currentAnswer}
+            canEditResponse={canEditResponse}
+            canReview={canReview}
             searchInputRef={searchInputRef}
             onSearchChange={setSearch}
             onFilterChange={setFilter}

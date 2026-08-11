@@ -32,6 +32,8 @@ type AssessmentViewProps = {
   activeTab: ResponseTab;
   commentDraft: string;
   currentAnswer: RequirementAnswer;
+  canEditResponse: boolean;
+  canReview: boolean;
   searchInputRef: RefObject<HTMLInputElement | null>;
   onSearchChange: (value: string) => void;
   onFilterChange: (filter: FilterKey) => void;
@@ -69,6 +71,8 @@ export function AssessmentView({
   activeTab,
   commentDraft,
   currentAnswer,
+  canEditResponse,
+  canReview,
   searchInputRef,
   onSearchChange,
   onFilterChange,
@@ -168,6 +172,8 @@ export function AssessmentView({
               activeTab={activeTab}
               commentDraft={commentDraft}
               categorySubmission={categorySubmissions[selectedCategory]}
+              canEditResponse={canEditResponse}
+              canReview={canReview}
               onSetActiveTab={onSetActiveTab}
               onSetCommentDraft={onSetCommentDraft}
               onUpdateAnswer={onUpdateAnswer}

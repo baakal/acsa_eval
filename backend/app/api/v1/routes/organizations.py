@@ -1,16 +1,17 @@
 """Organizations API — Sprint 4."""
 
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from pydantic import BaseModel, Field, HttpUrl
-from sqlalchemy import select, text
+from pydantic import BaseModel, Field
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.security import CurrentUser, get_current_user, require_admin
 from app.db.session import get_db
+from app.modules.audit.service import record_audit_event
 from app.modules.organizations.models import Organization, OrganizationMember, User
 
 router = APIRouter(prefix="/organizations", tags=["organizations"])
@@ -21,6 +22,7 @@ AdminAuth = Annotated[CurrentUser, Depends(require_admin)]
 
 
 # ── Schemas ───────────────────────────────────────────────────────────────────
+
 
 class OrganizationCreate(BaseModel):
     name: str = Field(min_length=2, max_length=255)
@@ -51,10 +53,9 @@ class InviteUserRequest(BaseModel):
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
+
 async def _get_or_create_user(session: AsyncSession, current: CurrentUser) -> User:
-    result = await session.execute(
-        select(User).where(User.oauth_sub == current.sub)
-    )
+    result = await session.execute(select(User).where(User.oauth_sub == current.sub))
     user = result.scalar_one_or_none()
     if user is None:
         user = User(
@@ -69,6 +70,7 @@ async def _get_or_create_user(session: AsyncSession, current: CurrentUser) -> Us
 
 
 # ── Endpoints ─────────────────────────────────────────────────────────────────
+
 
 @router.post("", status_code=status.HTTP_201_CREATED, response_model=OrganizationOut)
 async def register_organization(
@@ -113,6 +115,15 @@ async def register_organization(
         invited_by=user.id,
     )
     db.add(member)
+    await record_audit_event(
+        db,
+        event_type="organization.registered",
+        actor_id=user.id,
+        organization_id=org.id,
+        resource_type="organization",
+        resource_id=org.id,
+        details={"name": org.name, "status": org.status},
+    )
 
     return OrganizationOut.model_validate(org)
 
@@ -154,7 +165,16 @@ async def approve_organization(org_id: uuid.UUID, db: Db, current: AdminAuth):
     approver = await _get_or_create_user(db, current)
     org.status = "APPROVED"
     org.approved_by = approver.id
-    org.approved_at = datetime.now(timezone.utc)
+    org.approved_at = datetime.now(UTC)
+    await record_audit_event(
+        db,
+        event_type="organization.approved",
+        actor_id=approver.id,
+        organization_id=org.id,
+        resource_type="organization",
+        resource_id=org.id,
+        details={"status": org.status},
+    )
 
     return OrganizationOut.model_validate(org)
 
@@ -173,5 +193,15 @@ async def reject_organization(org_id: uuid.UUID, db: Db, current: AdminAuth):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Organization not found.")
 
     org.status = "REJECTED"
+    approver = await _get_or_create_user(db, current)
+    await record_audit_event(
+        db,
+        event_type="organization.rejected",
+        actor_id=approver.id,
+        organization_id=org.id,
+        resource_type="organization",
+        resource_id=org.id,
+        details={"status": org.status},
+    )
 
     return OrganizationOut.model_validate(org)
