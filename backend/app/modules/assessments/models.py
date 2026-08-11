@@ -57,10 +57,14 @@ class Response(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     notes: Mapped[str | None] = mapped_column(Text)
     is_complete: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     review_outcome: Mapped[str | None] = mapped_column(String(50))
+    review_feedback: Mapped[str | None] = mapped_column(Text)
     answered_by: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"))
     last_updated_by: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"))
 
     assessment: Mapped["Assessment"] = relationship(back_populates="responses", lazy="joined")
+    comments: Mapped[list["ResponseComment"]] = relationship(
+        back_populates="response", lazy="noload", cascade="all, delete-orphan"
+    )
 
 
 class FileObject(Base, TimestampMixin):
@@ -114,3 +118,17 @@ class AssessmentSectionStatus(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     submitted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
     assessment: Mapped["Assessment"] = relationship(lazy="joined")
+
+
+class ResponseComment(UUIDPrimaryKeyMixin, TimestampMixin, Base):
+    __tablename__ = "response_comments"
+
+    response_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("responses.id"), nullable=False
+    )
+    author_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    author_name: Mapped[str] = mapped_column(String(255), nullable=False)
+    author_role: Mapped[str] = mapped_column(String(50), nullable=False)
+    message: Mapped[str] = mapped_column(Text, nullable=False)
+
+    response: Mapped["Response"] = relationship(back_populates="comments", lazy="joined")

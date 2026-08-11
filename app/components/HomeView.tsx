@@ -1,6 +1,7 @@
 import type { CategoryAnalytics } from '../lib/types';
 
 type HomeViewProps = {
+  accountRole: 'Country' | 'Solution Provider';
   accountName: string;
   answered: number;
   totalRequirements: number;
@@ -12,12 +13,20 @@ type HomeViewProps = {
   couldCount: number;
   maxWeightedScore: number;
   categoryAnalytics: CategoryAnalytics[];
+  inviteEmail: string;
+  inviteRole: string;
+  inviteUrl: string | null;
+  invitePending: boolean;
   onStartAssessment: () => void;
   onViewAnalytics: () => void;
   onOpenCategory: (category: string) => void;
+  onInviteEmailChange: (value: string) => void;
+  onInviteRoleChange: (value: string) => void;
+  onCreateInvite: () => void;
 };
 
 export function HomeView({
+  accountRole,
   accountName,
   answered,
   totalRequirements,
@@ -29,9 +38,16 @@ export function HomeView({
   couldCount,
   maxWeightedScore,
   categoryAnalytics,
+  inviteEmail,
+  inviteRole,
+  inviteUrl,
+  invitePending,
   onStartAssessment,
   onViewAnalytics,
   onOpenCategory,
+  onInviteEmailChange,
+  onInviteRoleChange,
+  onCreateInvite,
 }: HomeViewProps) {
   const progress = Math.round((answered / totalRequirements) * 100);
 
@@ -156,6 +172,46 @@ export function HomeView({
           </article>
         </div>
       </section>
+
+      {accountRole === 'Country' && (
+        <section className="homeCollaboration">
+          <div className="homeSectionTitle">
+            <div>
+              <span className="eyebrow">SHARED WORKSPACE</span>
+              <h2>Invite a collaborator</h2>
+              <p>Create a secure link so a solution provider can join this shared assessment.</p>
+            </div>
+          </div>
+          <div className="inviteGrid">
+            <label>
+              <span>Email address</span>
+              <input
+                type="email"
+                value={inviteEmail}
+                onChange={(event) => onInviteEmailChange(event.target.value)}
+                placeholder="provider@example.org"
+              />
+            </label>
+            <label>
+              <span>Role label</span>
+              <select value={inviteRole} onChange={(event) => onInviteRoleChange(event.target.value)}>
+                <option value="collaborator">Collaborator</option>
+                <option value="reviewer">Reviewer</option>
+                <option value="contributor">Contributor</option>
+              </select>
+            </label>
+            <button onClick={onCreateInvite} disabled={invitePending || !inviteEmail.trim()}>
+              {invitePending ? 'Creating…' : 'Create invite link'}
+            </button>
+          </div>
+          {inviteUrl && (
+            <div className="inviteResult">
+              <b>Invite link ready</b>
+              <a href={inviteUrl}>{inviteUrl}</a>
+            </div>
+          )}
+        </section>
+      )}
 
       <section className="homeCategories">
         <div className="homeSectionTitle">

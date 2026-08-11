@@ -12,11 +12,12 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from app.core.security import CurrentUser, get_current_user
 from app.db.session import get_db
-from app.modules.assessments.models import Assessment, AssessmentSectionStatus, Response
-from app.modules.audit.service import record_audit_event
+from app.modules.assessments.models import Assessment, AssessmentSectionStatus, Response, ResponseComment
+from app.modules.audit.service import create_notification, record_audit_event
 from app.modules.organizations.models import OrganizationMember, User
 from app.modules.questionnaires.models import Requirement
 
@@ -41,6 +42,8 @@ class ResponseOut(BaseModel):
     notes: str | None
     is_complete: bool
     review_outcome: str | None
+    review_feedback: str | None
+    comments: list["ResponseCommentOut"]
     updated_at: datetime
 
     model_config = {"from_attributes": True}
@@ -55,6 +58,22 @@ class ResponseUpsert(BaseModel):
     notes: str | None = None
     is_complete: bool = False
     review_outcome: str | None = None
+    review_feedback: str | None = None
+
+
+class ResponseCommentOut(BaseModel):
+    id: uuid.UUID
+    author: str
+    role: str
+    message: str
+    created_at: datetime
+
+
+class ResponseCommentCreate(BaseModel):
+    message: str
+
+
+ResponseOut.model_rebuild()
 
 
 class SectionStatusOut(BaseModel):
@@ -126,6 +145,66 @@ async def _get_requirement_by_stable_id(
     return result.scalar_one_or_none()
 
 
+def _comment_role_for_user(current: CurrentUser) -> str:
+    return "Reviewer" if _is_reviewer(current) else "Provider"
+
+
+def _serialize_comment(comment: ResponseComment) -> ResponseCommentOut:
+    return ResponseCommentOut(
+        id=comment.id,
+        author=comment.author_name,
+        role=comment.author_role,
+        message=comment.message,
+        created_at=comment.created_at,
+    )
+
+
+def _serialize_response(response: Response, requirement_stable_id: str) -> ResponseOut:
+    comments = sorted(response.comments, key=lambda comment: comment.created_at)
+    return ResponseOut(
+        id=response.id,
+        assessment_id=response.assessment_id,
+        requirement_stable_id=requirement_stable_id,
+        compliance_code=response.compliance_code,
+        operating_mode=response.operating_mode,
+        depends_on_systems=response.depends_on_systems,
+        dependent_systems=response.dependent_systems,
+        evidence_text=response.evidence_text,
+        notes=response.notes,
+        is_complete=response.is_complete,
+        review_outcome=response.review_outcome,
+        review_feedback=response.review_feedback,
+        comments=[_serialize_comment(comment) for comment in comments],
+        updated_at=response.updated_at,
+    )
+
+
+async def _notify_assessment_members(
+    session: AsyncSession,
+    *,
+    assessment: Assessment,
+    actor_id: uuid.UUID,
+    title: str,
+    body: str,
+    notification_type: str,
+) -> None:
+    member_result = await session.execute(
+        select(OrganizationMember.user_id).where(
+            OrganizationMember.organization_id == assessment.organization_id,
+            OrganizationMember.user_id != actor_id,
+        )
+    )
+    for recipient_id in member_result.scalars().all():
+        await create_notification(
+            session,
+            user_id=recipient_id,
+            notification_type=notification_type,
+            title=title,
+            body=body,
+            link=f"/assessment?assessmentId={assessment.id}",
+        )
+
+
 # ── Response endpoints ────────────────────────────────────────────────────────
 
 
@@ -144,27 +223,12 @@ async def list_responses(assessment_id: uuid.UUID, db: Db, current: Auth):
     result = await db.execute(
         select(Response, Requirement.stable_id.label("req_stable_id"))
         .join(Requirement, Requirement.id == Response.requirement_id)
+        .options(selectinload(Response.comments))
         .where(Response.assessment_id == assessment_id)
     )
     rows = result.all()
 
-    return [
-        ResponseOut(
-            id=resp.id,
-            assessment_id=resp.assessment_id,
-            requirement_stable_id=req_stable_id,
-            compliance_code=resp.compliance_code,
-            operating_mode=resp.operating_mode,
-            depends_on_systems=resp.depends_on_systems,
-            dependent_systems=resp.dependent_systems,
-            evidence_text=resp.evidence_text,
-            notes=resp.notes,
-            is_complete=resp.is_complete,
-            review_outcome=resp.review_outcome,
-            updated_at=resp.updated_at,
-        )
-        for resp, req_stable_id in rows
-    ]
+    return [_serialize_response(resp, req_stable_id) for resp, req_stable_id in rows]
 
 
 @router.put(
@@ -210,6 +274,7 @@ async def upsert_response(
         "evidence_text": response.evidence_text if response else None,
         "notes": response.notes if response else None,
         "is_complete": response.is_complete if response else False,
+        "review_feedback": response.review_feedback if response else None,
     }
     requested_fields = {
         "compliance_code": body.compliance_code,
@@ -219,6 +284,7 @@ async def upsert_response(
         "evidence_text": body.evidence_text,
         "notes": body.notes,
         "is_complete": body.is_complete,
+        "review_feedback": body.review_feedback,
     }
     response_content_changed = requested_fields != existing_fields
 
@@ -269,6 +335,7 @@ async def upsert_response(
     response.notes = body.notes
     response.is_complete = body.is_complete
     response.review_outcome = body.review_outcome
+    response.review_feedback = body.review_feedback
     response.last_updated_by = user.id
 
     await db.flush()
@@ -292,21 +359,83 @@ async def upsert_response(
             "is_complete": body.is_complete,
         },
     )
+    await db.refresh(response, attribute_names=["comments"])
+    return _serialize_response(response, requirement_stable_id)
 
-    return ResponseOut(
-        id=response.id,
-        assessment_id=response.assessment_id,
-        requirement_stable_id=requirement_stable_id,
-        compliance_code=response.compliance_code,
-        operating_mode=response.operating_mode,
-        depends_on_systems=response.depends_on_systems,
-        dependent_systems=response.dependent_systems,
-        evidence_text=response.evidence_text,
-        notes=response.notes,
-        is_complete=response.is_complete,
-        review_outcome=response.review_outcome,
-        updated_at=response.updated_at,
+
+@router.post(
+    "/assessments/{assessment_id}/responses/{requirement_stable_id}/comments",
+    response_model=ResponseCommentOut,
+    status_code=status.HTTP_201_CREATED,
+)
+async def add_response_comment(
+    assessment_id: uuid.UUID,
+    requirement_stable_id: str,
+    body: ResponseCommentCreate,
+    db: Db,
+    current: Auth,
+):
+    user = await _get_user(db, current.sub)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found.")
+
+    message = body.message.strip()
+    if not message:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Comment message cannot be empty.",
+        )
+
+    assessment = await _assert_assessment_access(db, user.id, assessment_id)
+    requirement = await _get_requirement_by_stable_id(
+        db, requirement_stable_id, assessment.questionnaire_version_id
     )
+    if not requirement:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Requirement '{requirement_stable_id}' not found in this questionnaire version.",
+        )
+
+    response_result = await db.execute(
+        select(Response)
+        .options(selectinload(Response.comments))
+        .where(
+            Response.assessment_id == assessment_id,
+            Response.requirement_id == requirement.id,
+        )
+    )
+    response = response_result.scalar_one_or_none()
+    if response is None:
+        response = Response(
+            assessment_id=assessment_id,
+            requirement_id=requirement.id,
+            answered_by=user.id,
+            last_updated_by=user.id,
+        )
+        db.add(response)
+        await db.flush()
+
+    comment = ResponseComment(
+        response_id=response.id,
+        author_id=user.id,
+        author_name=user.full_name,
+        author_role=_comment_role_for_user(current),
+        message=message,
+    )
+    db.add(comment)
+    response.last_updated_by = user.id
+    await db.flush()
+    await record_audit_event(
+        db,
+        event_type="response.comment_added",
+        actor_id=user.id,
+        organization_id=assessment.organization_id,
+        assessment_id=assessment.id,
+        resource_type="response_comment",
+        resource_id=comment.id,
+        details={"requirement_stable_id": requirement_stable_id},
+    )
+    return _serialize_comment(comment)
 
 
 # ── Section-status endpoints ──────────────────────────────────────────────────
@@ -401,5 +530,32 @@ async def upsert_section_status(
                 "to_status": body.status,
             },
         )
+        if body.status == "Submitted":
+            await _notify_assessment_members(
+                db,
+                assessment=assessment,
+                actor_id=user.id,
+                title="Category submitted for review",
+                body=f"{section_stable_id} was submitted for review.",
+                notification_type="section.submitted",
+            )
+        elif body.status == "Changes Requested":
+            await _notify_assessment_members(
+                db,
+                assessment=assessment,
+                actor_id=user.id,
+                title="Reviewer requested changes",
+                body=f"{section_stable_id} was returned with requested updates.",
+                notification_type="section.changes_requested",
+            )
+        elif body.status == "Approved":
+            await _notify_assessment_members(
+                db,
+                assessment=assessment,
+                actor_id=user.id,
+                title="Category approved",
+                body=f"All reviewed requirements in {section_stable_id} are approved.",
+                notification_type="section.approved",
+            )
 
     return SectionStatusOut.model_validate(section_status)
