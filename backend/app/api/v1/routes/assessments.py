@@ -1,7 +1,7 @@
 """Assessments API — Sprint 6 (list + create) and Sprint 11 (submit)."""
 
 import uuid
-from datetime import date, datetime, timezone
+from datetime import UTC, date, datetime
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -22,6 +22,7 @@ Auth = Annotated[CurrentUser, Depends(get_current_user)]
 
 
 # ── Schemas ───────────────────────────────────────────────────────────────────
+
 
 class AssessmentCreate(BaseModel):
     organization_id: uuid.UUID
@@ -48,6 +49,7 @@ class AssessmentOut(BaseModel):
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
+
 async def _get_user(session: AsyncSession, sub: str) -> User | None:
     result = await session.execute(select(User).where(User.oauth_sub == sub))
     return result.scalar_one_or_none()
@@ -68,6 +70,7 @@ async def _assert_org_member(session: AsyncSession, user_id: uuid.UUID, org_id: 
 
 
 # ── Endpoints ─────────────────────────────────────────────────────────────────
+
 
 @router.get("", response_model=list[AssessmentOut])
 async def list_assessments(
@@ -188,7 +191,7 @@ async def submit_assessment(assessment_id: uuid.UUID, db: Db, current: Auth):
         )
 
     assessment.status = "SUBMITTED"
-    assessment.submitted_at = datetime.now(timezone.utc)
+    assessment.submitted_at = datetime.now(UTC)
     await record_audit_event(
         db,
         event_type="assessment.submitted",

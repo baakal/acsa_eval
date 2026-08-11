@@ -72,6 +72,7 @@ class AdminAuditEventOut(BaseModel):
 class AdminAssessmentDetailOut(AdminAssessmentSummaryOut):
     section_statuses: list[AdminSectionStatusOut]
     audit_events: list[AdminAuditEventOut]
+    total_audit_events: int
 
 
 async def _load_requirement_stats(
@@ -128,9 +129,9 @@ async def _load_response_stats(
         )
         if is_complete:
             stats["completed_requirements"] += 1
-        stats["achieved_score"] += COMPLIANCE_SCORES.get(compliance_code or "", 0) * PRIORITY_WEIGHTS.get(
-            priority, 1
-        )
+        stats["achieved_score"] += COMPLIANCE_SCORES.get(
+            compliance_code or "", 0
+        ) * PRIORITY_WEIGHTS.get(priority, 1)
     return response_stats
 
 
@@ -154,8 +155,7 @@ async def _build_summary_rows(
         )
         total_requirements = sum(counts.values())
         max_weighted_score = sum(
-            count * 3 * PRIORITY_WEIGHTS.get(priority, 1)
-            for priority, count in counts.items()
+            count * 3 * PRIORITY_WEIGHTS.get(priority, 1) for priority, count in counts.items()
         )
         response_summary = response_stats.get(
             assessment.id,
@@ -163,8 +163,12 @@ async def _build_summary_rows(
         )
         completed_requirements = int(response_summary["completed_requirements"])
         achieved_score = float(response_summary["achieved_score"])
-        completion_percent = round((completed_requirements / total_requirements) * 100) if total_requirements else 0
-        compliance_score = round((achieved_score / max_weighted_score) * 100) if max_weighted_score else 0
+        completion_percent = (
+            round((completed_requirements / total_requirements) * 100) if total_requirements else 0
+        )
+        compliance_score = (
+            round((achieved_score / max_weighted_score) * 100) if max_weighted_score else 0
+        )
 
         summaries.append(
             AdminAssessmentSummaryOut(
@@ -244,6 +248,9 @@ async def get_admin_assessment(
         .order_by(AuditEvent.occurred_at.desc())
         .limit(100)
     )
+    audit_count_result = await db.execute(
+        select(func.count(AuditEvent.id)).where(AuditEvent.assessment_id == assessment_id)
+    )
 
     return AdminAssessmentDetailOut(
         **summary.model_dump(),
@@ -267,4 +274,5 @@ async def get_admin_assessment(
             )
             for event in audit_events_result.scalars().all()
         ],
+        total_audit_events=audit_count_result.scalar_one(),
     )

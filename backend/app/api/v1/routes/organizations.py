@@ -1,12 +1,12 @@
 """Organizations API — Sprint 4."""
 
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from pydantic import BaseModel, Field, HttpUrl
-from sqlalchemy import select, text
+from pydantic import BaseModel, Field
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.security import CurrentUser, get_current_user, require_admin
@@ -22,6 +22,7 @@ AdminAuth = Annotated[CurrentUser, Depends(require_admin)]
 
 
 # ── Schemas ───────────────────────────────────────────────────────────────────
+
 
 class OrganizationCreate(BaseModel):
     name: str = Field(min_length=2, max_length=255)
@@ -52,10 +53,9 @@ class InviteUserRequest(BaseModel):
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
+
 async def _get_or_create_user(session: AsyncSession, current: CurrentUser) -> User:
-    result = await session.execute(
-        select(User).where(User.oauth_sub == current.sub)
-    )
+    result = await session.execute(select(User).where(User.oauth_sub == current.sub))
     user = result.scalar_one_or_none()
     if user is None:
         user = User(
@@ -70,6 +70,7 @@ async def _get_or_create_user(session: AsyncSession, current: CurrentUser) -> Us
 
 
 # ── Endpoints ─────────────────────────────────────────────────────────────────
+
 
 @router.post("", status_code=status.HTTP_201_CREATED, response_model=OrganizationOut)
 async def register_organization(
@@ -164,7 +165,7 @@ async def approve_organization(org_id: uuid.UUID, db: Db, current: AdminAuth):
     approver = await _get_or_create_user(db, current)
     org.status = "APPROVED"
     org.approved_by = approver.id
-    org.approved_at = datetime.now(timezone.utc)
+    org.approved_at = datetime.now(UTC)
     await record_audit_event(
         db,
         event_type="organization.approved",

@@ -5,7 +5,7 @@ submission statuses for a given assessment.
 """
 
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -242,7 +242,11 @@ async def upsert_response(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Solution provider accounts cannot change review decisions.",
             )
-        if section_status and section_status.status in {"Submitted", "Approved"} and response_content_changed:
+        if (
+            section_status
+            and section_status.status in {"Submitted", "Approved"}
+            and response_content_changed
+        ):
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
                 detail="This section is locked until a reviewer requests changes.",
@@ -271,7 +275,7 @@ async def upsert_response(
     await db.refresh(response)
     event_type = (
         "response.reviewed"
-        if previous_review_outcome != body.review_outcome
+        if previous_review_outcome != body.review_outcome and body.review_outcome is not None
         else "response.updated"
     )
     await record_audit_event(
@@ -344,7 +348,7 @@ async def upsert_section_status(
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found.")
 
-    await _assert_assessment_access(db, user.id, assessment_id)
+    assessment = await _assert_assessment_access(db, user.id, assessment_id)
 
     result = await db.execute(
         select(AssessmentSectionStatus).where(
@@ -376,7 +380,7 @@ async def upsert_section_status(
 
     section_status.status = body.status
     if body.status == "Submitted" and section_status.submitted_at is None:
-        section_status.submitted_at = body.submitted_at or datetime.now(timezone.utc)
+        section_status.submitted_at = body.submitted_at or datetime.now(UTC)
     elif body.status != "Submitted":
         section_status.submitted_at = body.submitted_at
 

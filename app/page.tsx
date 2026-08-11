@@ -75,6 +75,7 @@ export default function Home() {
 
   const scoring = useScoring(categories, catalogue, answers, categorySubmissions);
   const canReview = account?.role === 'Country';
+  const resolvedActiveTab = !canReview && activeTab === 'review' ? 'response' : activeTab;
   const canEditResponse =
     !!account &&
     account.role === 'Solution Provider' &&
@@ -344,12 +345,6 @@ export default function Home() {
   }
 
   useEffect(() => {
-    if (!canReview && activeTab === 'review') {
-      setActiveTab('response');
-    }
-  }, [activeTab, canReview]);
-
-  useEffect(() => {
     if (workspaceView !== 'assessment') return;
     function handleKeyDown(event: KeyboardEvent) {
       const target = event.target as HTMLElement;
@@ -518,7 +513,7 @@ export default function Home() {
             search={search}
             filter={filter}
             filterCounts={filterCounts}
-            activeTab={activeTab}
+            activeTab={resolvedActiveTab}
             commentDraft={commentDraft}
             currentAnswer={currentAnswer}
             canEditResponse={canEditResponse}

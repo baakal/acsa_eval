@@ -177,6 +177,7 @@ export interface AdminAuditEventOut {
 export interface AdminAssessmentDetailOut extends AdminAssessmentSummaryOut {
   section_statuses: AdminSectionStatusOut[];
   audit_events: AdminAuditEventOut[];
+  total_audit_events: number;
 }
 
 export async function listAdminAssessments(token: string): Promise<AdminAssessmentSummaryOut[]> {

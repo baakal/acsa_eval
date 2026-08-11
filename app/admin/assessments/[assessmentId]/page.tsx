@@ -52,7 +52,7 @@ export default function AdminAssessmentDetailPage() {
           </article>
           <article>
             <span>Audit events</span>
-            <strong>{data.audit_events.length}</strong>
+            <strong>{data.total_audit_events}</strong>
           </article>
         </div>
       </section>
