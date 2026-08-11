@@ -1,6 +1,6 @@
 'use client';
 
-import { ChangeEvent, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
+import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { signOut, useSession } from 'next-auth/react';
 import catalogue from './catalogue.json';
 import { AnalyticsView } from './components/AnalyticsView';
@@ -12,6 +12,7 @@ import { useCategorySubmissions } from './hooks/useCategorySubmissions';
 import { useScoring } from './hooks/useScoring';
 import { useSessionAccount } from './hooks/useSessionAccount';
 import { useWorkspace } from './hooks/useWorkspace';
+import { createInvitation } from './lib/api-client';
 import { MAX_UPLOAD_BYTES } from './lib/config';
 import { exportPortableData, exportWorkbook, readPortableDataFile, summarizePortableImport, validatePortableDataFile } from './lib/portability';
 import { isAnswerComplete } from './lib/scoring';
@@ -35,11 +36,11 @@ export default function Home() {
     getHydratedSnapshot,
     getServerHydratedSnapshot,
   );
-  const { status: sessionStatus } = useSession();
+  const { data: session, status: sessionStatus } = useSession();
   const { account, loaded: sessionLoaded } = useSessionAccount();
   const { workspace, loading: workspaceLoading } = useWorkspace();
   const assessmentId = workspace?.assessment_id ?? null;
-  const { answers, setAnswers, upsertAnswer, getAnswer } = useAnswers(assessmentId);
+  const { answers, setAnswers, upsertAnswer, addComment: persistComment, getAnswer } = useAnswers(assessmentId);
   const { categorySubmissions, setCategorySubmissions } = useCategorySubmissions(assessmentId);
   const [search, setSearch] = useState('');
   const [workspaceView, setWorkspaceView] = useState<'home' | 'assessment' | 'analytics'>('home');
@@ -53,6 +54,10 @@ export default function Home() {
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const [dataAction, setDataAction] = useState<'xlsx' | null>(null);
+  const [inviteEmail, setInviteEmail] = useState('');
+  const [inviteRole, setInviteRole] = useState('collaborator');
+  const [inviteUrl, setInviteUrl] = useState<string | null>(null);
+  const [invitePending, setInvitePending] = useState(false);
   const [pendingImport, setPendingImport] = useState<{
     data: PortableDataFile;
     summary: ReturnType<typeof summarizePortableImport>;
@@ -151,16 +156,16 @@ export default function Home() {
     toastTimeout.current = setTimeout(() => setToast(null), 2400);
   }
 
-  function goToRequirement(offset: number) {
+  const goToRequirement = useCallback((offset: number) => {
     const selectedIndex = categoryRequirements.findIndex((item) => item.id === selectedRequirement?.id);
     const next = categoryRequirements[selectedIndex + offset];
     if (next) {
       setSelectedRequirementId(next.id);
       setCommentDraft('');
     }
-  }
+  }, [categoryRequirements, selectedRequirement]);
 
-  function jumpToNextIncomplete() {
+  const jumpToNextIncomplete = useCallback(() => {
     const next = catalogue.find((item) => !isAnswerComplete(answers[item.id]));
     if (next) {
       selectRequirement(next.id);
@@ -168,15 +173,15 @@ export default function Home() {
       return;
     }
     showToast('Every requirement is complete');
-  }
+  }, [answers]);
 
-  function updateAnswer(patch: Partial<RequirementAnswer>) {
+  const updateAnswer = useCallback((patch: Partial<RequirementAnswer>) => {
     if (!selectedRequirement) return;
     upsertAnswer(selectedRequirement.id, patch);
     setSaving(true);
     if (savingTimeout.current) clearTimeout(savingTimeout.current);
     savingTimeout.current = setTimeout(() => setSaving(false), 450);
-  }
+  }, [selectedRequirement, upsertAnswer]);
 
   function submitCategory() {
     if (!canEditResponse) return;
@@ -230,21 +235,10 @@ export default function Home() {
     event.target.value = '';
   }
 
-  function addComment() {
+  async function addComment() {
     const message = commentDraft.trim();
-    if (!message || !account) return;
-    updateAnswer({
-      comments: [
-        ...currentAnswer.comments,
-        {
-          id: window.crypto.randomUUID(),
-          author: account.name,
-          role: account.role,
-          message,
-          createdAt: new Date().toISOString(),
-        },
-      ],
-    });
+    if (!message || !selectedRequirement) return;
+    await persistComment(selectedRequirement.id, message);
     setCommentDraft('');
   }
 
@@ -279,6 +273,26 @@ export default function Home() {
 
   function closeAccountMenu() {
     accountMenuRef.current?.removeAttribute('open');
+  }
+
+  async function handleCreateInvite() {
+    if (!session?.accessToken || !workspace?.assessment_id || !inviteEmail.trim()) return;
+    try {
+      setInvitePending(true);
+      const invitation = await createInvitation(session.accessToken, {
+        assessment_id: workspace.assessment_id,
+        email: inviteEmail.trim(),
+        role: inviteRole,
+      });
+      const absoluteUrl = `${window.location.origin}${invitation.invite_url ?? `/invite/${invitation.token}`}`;
+      setInviteUrl(absoluteUrl);
+      setInviteEmail('');
+      showToast('Invitation link created');
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : 'Invitation could not be created');
+    } finally {
+      setInvitePending(false);
+    }
   }
 
   function handleJsonExport() {
@@ -378,7 +392,7 @@ export default function Home() {
     }
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [canEditResponse, selectedRequirement, workspaceView]);
+  }, [canEditResponse, goToRequirement, jumpToNextIncomplete, selectedRequirement, updateAnswer, workspaceView]);
 
   if (!hydrated || sessionStatus === 'loading' || (sessionStatus === 'authenticated' && (workspaceLoading || !sessionLoaded))) {
     return (
@@ -478,6 +492,7 @@ export default function Home() {
 
         {workspaceView === 'home' ? (
           <HomeView
+            accountRole={account.role}
             accountName={account.name}
             answered={scoring.answered}
             totalRequirements={catalogue.length}
@@ -489,12 +504,19 @@ export default function Home() {
             couldCount={couldCount}
             maxWeightedScore={scoring.maxWeightedScore}
             categoryAnalytics={scoring.categoryAnalytics}
+            inviteEmail={inviteEmail}
+            inviteRole={inviteRole}
+            inviteUrl={inviteUrl}
+            invitePending={invitePending}
             onStartAssessment={() => setWorkspaceView('assessment')}
             onViewAnalytics={() => setWorkspaceView('analytics')}
             onOpenCategory={(category) => {
               chooseCategory(category);
               setWorkspaceView('assessment');
             }}
+            onInviteEmailChange={setInviteEmail}
+            onInviteRoleChange={setInviteRole}
+            onCreateInvite={handleCreateInvite}
           />
         ) : workspaceView === 'assessment' ? (
           <AssessmentView

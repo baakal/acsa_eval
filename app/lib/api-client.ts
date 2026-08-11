@@ -36,6 +36,15 @@ async function request<T>(
   return response.json() as Promise<T>;
 }
 
+async function requestPublic<T>(path: string, options: RequestInit = {}): Promise<T> {
+  const response = await fetch(`${API_BASE}${path}`, options);
+  if (!response.ok) {
+    const detail = await response.text().catch(() => '');
+    throw new ApiError(response.status, detail || `HTTP ${response.status}`);
+  }
+  return response.json() as Promise<T>;
+}
+
 // ── Workspace ─────────────────────────────────────────────────────────────────
 
 export interface WorkspaceOut {
@@ -65,7 +74,17 @@ export interface ResponseOut {
   notes: string | null;
   is_complete: boolean;
   review_outcome: string | null;
+  review_feedback: string | null;
+  comments: DiscussionCommentOut[];
   updated_at: string;
+}
+
+export interface DiscussionCommentOut {
+  id: string;
+  author: string;
+  role: string;
+  message: string;
+  created_at: string;
 }
 
 export interface ResponseUpsert {
@@ -77,6 +96,7 @@ export interface ResponseUpsert {
   notes?: string | null;
   is_complete?: boolean;
   review_outcome?: string | null;
+  review_feedback?: string | null;
 }
 
 export async function listResponses(
@@ -96,6 +116,19 @@ export async function upsertResponse(
     `/api/v1/assessments/${assessmentId}/responses/${encodeURIComponent(requirementStableId)}`,
     token,
     { method: 'PUT', body: JSON.stringify(body) },
+  );
+}
+
+export async function addResponseComment(
+  token: string,
+  assessmentId: string,
+  requirementStableId: string,
+  message: string,
+): Promise<DiscussionCommentOut> {
+  return request<DiscussionCommentOut>(
+    `/api/v1/assessments/${assessmentId}/responses/${encodeURIComponent(requirementStableId)}/comments`,
+    token,
+    { method: 'POST', body: JSON.stringify({ message }) },
   );
 }
 
@@ -202,4 +235,39 @@ export async function exportAdminAssessmentsWorkbook(token: string): Promise<Blo
     throw new ApiError(response.status, detail || `HTTP ${response.status}`);
   }
   return response.blob();
+}
+
+export interface InvitationOut {
+  token: string;
+  email: string;
+  role: string;
+  status: string;
+  expires_at: string;
+  organization_name: string;
+  assessment_id: string | null;
+  assessment_name: string | null;
+  invite_url?: string | null;
+}
+
+export async function createInvitation(
+  token: string,
+  body: { assessment_id?: string | null; email: string; role?: string },
+): Promise<InvitationOut> {
+  return request<InvitationOut>('/api/v1/invitations', token, {
+    method: 'POST',
+    body: JSON.stringify(body),
+  });
+}
+
+export async function getInvitation(token: string): Promise<InvitationOut> {
+  return requestPublic<InvitationOut>(`/api/v1/invitations/${encodeURIComponent(token)}`);
+}
+
+export async function acceptInvitation(
+  accessToken: string,
+  token: string,
+): Promise<InvitationOut> {
+  return request<InvitationOut>(`/api/v1/invitations/${encodeURIComponent(token)}/accept`, accessToken, {
+    method: 'POST',
+  });
 }

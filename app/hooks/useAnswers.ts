@@ -3,8 +3,8 @@
 import { useCallback, useMemo } from 'react';
 import { useSession } from 'next-auth/react';
 import useSWR from 'swr';
-import { listResponses, upsertResponse } from '../lib/api-client';
-import type { RequirementAnswer } from '../lib/types';
+import { addResponseComment, listResponses, upsertResponse } from '../lib/api-client';
+import type { DiscussionComment, RequirementAnswer } from '../lib/types';
 
 export function normalizeAnswer(answer?: Partial<RequirementAnswer>): RequirementAnswer {
   return {
@@ -30,6 +30,14 @@ function responseToAnswer(resp: {
   evidence_text: string | null;
   notes: string | null;
   review_outcome: string | null;
+  review_feedback: string | null;
+  comments: Array<{
+    id: string;
+    author: string;
+    role: string;
+    message: string;
+    created_at: string;
+  }>;
 }): RequirementAnswer {
   const reviewStatusMap: Record<string, RequirementAnswer['reviewStatus']> = {
     APPROVED: 'Approved',
@@ -42,7 +50,17 @@ function responseToAnswer(resp: {
     dependentSystems: resp.dependent_systems ?? '',
     evidence: resp.evidence_text ?? '',
     notes: resp.notes ?? '',
+    comments: resp.comments.map(
+      (comment): DiscussionComment => ({
+        id: comment.id,
+        author: comment.author,
+        role: comment.role,
+        message: comment.message,
+        createdAt: comment.created_at,
+      }),
+    ),
     reviewStatus: reviewStatusMap[resp.review_outcome ?? ''] ?? 'Not Reviewed',
+    reviewFeedback: resp.review_feedback ?? '',
   });
 }
 
@@ -63,6 +81,7 @@ function answerToUpsert(answer: Partial<RequirementAnswer>) {
     notes: answer.notes ?? null,
     is_complete: isComplete,
     review_outcome: reviewOutcomeMap[answer.reviewStatus ?? 'Not Reviewed'] ?? null,
+    review_feedback: answer.reviewFeedback ?? null,
   };
 }
 
@@ -112,6 +131,8 @@ export function useAnswers(assessmentId: string | null) {
             notes: merged.notes ?? null,
             is_complete: Boolean(merged.compliance),
             review_outcome: reviewOutcomeMap[merged.reviewStatus] ?? null,
+            review_feedback: merged.reviewFeedback ?? null,
+            comments: existing[index]?.comments ?? [],
             updated_at: new Date().toISOString(),
           };
           if (index >= 0) {
@@ -152,11 +173,36 @@ export function useAnswers(assessmentId: string | null) {
     [assessmentId, token, upsertAnswer],
   );
 
+  const addComment = useCallback(
+    async (requirementId: string, message: string) => {
+      if (!assessmentId || !token) return;
+      const saved = await addResponseComment(token, assessmentId, requirementId, message);
+      mutate(
+        (current) => {
+          const existing = current ?? [];
+          return existing.some((response) => response.requirement_stable_id === requirementId)
+            ? existing.map((response) =>
+                response.requirement_stable_id === requirementId
+                  ? {
+                      ...response,
+                      comments: [...response.comments, saved],
+                      updated_at: new Date().toISOString(),
+                    }
+                  : response,
+              )
+            : existing;
+        },
+        { revalidate: false },
+      );
+      await mutate();
+    },
+    [assessmentId, token, mutate],
+  );
+
   const getAnswer = useCallback(
     (requirementId: string) => normalizeAnswer(answers[requirementId]),
     [answers],
   );
 
-  return { answers, setAnswers, upsertAnswer, getAnswer };
+  return { answers, setAnswers, upsertAnswer, addComment, getAnswer };
 }
-

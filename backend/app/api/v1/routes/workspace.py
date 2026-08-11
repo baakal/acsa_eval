@@ -11,7 +11,7 @@ POST /api/v1/me/workspace
 """
 
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -65,31 +65,31 @@ async def bootstrap_workspace(db: Db, current: Auth):
         db.add(user)
         await db.flush()
 
-    user.last_login_at = datetime.now(timezone.utc)
+    user.last_login_at = datetime.now(UTC)
 
-    # 2. Get or create personal organization ──────────────────────────────────
-    # Personal orgs are named "<full_name>'s Workspace" and are auto-approved.
-    personal_org_name = f"{user.full_name}'s Workspace"
-    org_result = await db.execute(
-        select(Organization)
-        .join(OrganizationMember, OrganizationMember.organization_id == Organization.id)
+    # 2. Resolve the most recent shared workspace, or create a personal one ───
+    membership_result = await db.execute(
+        select(OrganizationMember, Organization)
+        .join(Organization, Organization.id == OrganizationMember.organization_id)
         .where(
             OrganizationMember.user_id == user.id,
-            Organization.name == personal_org_name,
             Organization.deleted_at.is_(None),
         )
+        .order_by(OrganizationMember.created_at.desc())
         .limit(1)
     )
-    org = org_result.scalar_one_or_none()
+    membership_row = membership_result.one_or_none()
+    org = membership_row[1] if membership_row else None
 
     if org is None:
+        personal_org_name = f"{user.full_name}'s Workspace"
         org = Organization(
             name=personal_org_name,
             type_id=_PROVIDER_TYPE_ID,
             created_by=user.id,
             status="APPROVED",
             approved_by=user.id,
-            approved_at=datetime.now(timezone.utc),
+            approved_at=datetime.now(UTC),
         )
         db.add(org)
         await db.flush()
@@ -120,10 +120,13 @@ async def bootstrap_workspace(db: Db, current: Auth):
 
     # 4. Get or create the default assessment ─────────────────────────────────
     assessment_result = await db.execute(
-        select(Assessment).where(
+        select(Assessment)
+        .where(
             Assessment.organization_id == org.id,
             Assessment.deleted_at.is_(None),
-        ).limit(1)
+        )
+        .order_by(Assessment.created_at.desc())
+        .limit(1)
     )
     assessment = assessment_result.scalar_one_or_none()
 
