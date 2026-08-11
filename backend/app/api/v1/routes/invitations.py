@@ -102,7 +102,7 @@ async def create_invitation(body: InvitationCreate, db: Db, current: Auth):
     row = membership_result.one_or_none()
     if row is None:
         raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
+            status_code=status.HTTP_404_NOT_FOUND,
             detail="No organization workspace is available for invitations.",
         )
     _, organization = row

@@ -16,7 +16,12 @@ from sqlalchemy.orm import selectinload
 
 from app.core.security import CurrentUser, get_current_user
 from app.db.session import get_db
-from app.modules.assessments.models import Assessment, AssessmentSectionStatus, Response, ResponseComment
+from app.modules.assessments.models import (
+    Assessment,
+    AssessmentSectionStatus,
+    Response,
+    ResponseComment,
+)
 from app.modules.audit.service import create_notification, record_audit_event
 from app.modules.organizations.models import OrganizationMember, User
 from app.modules.questionnaires.models import Requirement

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { signIn, useSession } from 'next-auth/react';
 import { useParams, useRouter } from 'next/navigation';
-import { acceptInvitation, getInvitation, type InvitationOut } from '../../../lib/api-client';
+import { acceptInvitation, getInvitation, type InvitationOut } from '../../lib/api-client';
 
 export default function InvitationPage() {
   const params = useParams<{ token: string }>();
@@ -23,7 +23,7 @@ export default function InvitationPage() {
         setInvitation(result);
         setError(null);
       })
-      .catch((err) => {
+      .catch((err: unknown) => {
         setError(err instanceof Error ? err.message : 'Invitation could not be loaded.');
       })
       .finally(() => setLoading(false));
@@ -36,7 +36,7 @@ export default function InvitationPage() {
       setSubmitting(true);
       await acceptInvitation(session.accessToken, token);
       router.push('/');
-    } catch (err) {
+    } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Invitation could not be accepted.');
     } finally {
       setSubmitting(false);

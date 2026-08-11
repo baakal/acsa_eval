@@ -207,7 +207,9 @@ export function HomeView({
           {inviteUrl && (
             <div className="inviteResult">
               <b>Invite link ready</b>
-              <a href={inviteUrl}>{inviteUrl}</a>
+              <a href={inviteUrl} target="_blank" rel="noopener noreferrer">
+                {inviteUrl}
+              </a>
             </div>
           )}
         </section>

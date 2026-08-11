@@ -180,40 +180,21 @@ export function useAnswers(assessmentId: string | null) {
       mutate(
         (current) => {
           const existing = current ?? [];
-          const index = existing.findIndex((response) => response.requirement_stable_id === requirementId);
-          if (index < 0) {
-            return [
-              ...existing,
-              {
-                id: '',
-                assessment_id: assessmentId,
-                requirement_stable_id: requirementId,
-                compliance_code: null,
-                operating_mode: null,
-                depends_on_systems: null,
-                dependent_systems: null,
-                evidence_text: null,
-                notes: null,
-                is_complete: false,
-                review_outcome: null,
-                review_feedback: null,
-                comments: [saved],
-                updated_at: new Date().toISOString(),
-              },
-            ];
-          }
-          return existing.map((response, responseIndex) =>
-            responseIndex === index
-              ? {
-                  ...response,
-                  comments: [...response.comments, saved],
-                  updated_at: new Date().toISOString(),
-                }
-              : response,
-          );
+          return existing.some((response) => response.requirement_stable_id === requirementId)
+            ? existing.map((response) =>
+                response.requirement_stable_id === requirementId
+                  ? {
+                      ...response,
+                      comments: [...response.comments, saved],
+                      updated_at: new Date().toISOString(),
+                    }
+                  : response,
+              )
+            : existing;
         },
         { revalidate: false },
       );
+      await mutate();
     },
     [assessmentId, token, mutate],
   );

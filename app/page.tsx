@@ -1,6 +1,6 @@
 'use client';
 
-import { ChangeEvent, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
+import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { signOut, useSession } from 'next-auth/react';
 import catalogue from './catalogue.json';
 import { AnalyticsView } from './components/AnalyticsView';
@@ -156,16 +156,16 @@ export default function Home() {
     toastTimeout.current = setTimeout(() => setToast(null), 2400);
   }
 
-  function goToRequirement(offset: number) {
+  const goToRequirement = useCallback((offset: number) => {
     const selectedIndex = categoryRequirements.findIndex((item) => item.id === selectedRequirement?.id);
     const next = categoryRequirements[selectedIndex + offset];
     if (next) {
       setSelectedRequirementId(next.id);
       setCommentDraft('');
     }
-  }
+  }, [categoryRequirements, selectedRequirement]);
 
-  function jumpToNextIncomplete() {
+  const jumpToNextIncomplete = useCallback(() => {
     const next = catalogue.find((item) => !isAnswerComplete(answers[item.id]));
     if (next) {
       selectRequirement(next.id);
@@ -173,15 +173,15 @@ export default function Home() {
       return;
     }
     showToast('Every requirement is complete');
-  }
+  }, [answers]);
 
-  function updateAnswer(patch: Partial<RequirementAnswer>) {
+  const updateAnswer = useCallback((patch: Partial<RequirementAnswer>) => {
     if (!selectedRequirement) return;
     upsertAnswer(selectedRequirement.id, patch);
     setSaving(true);
     if (savingTimeout.current) clearTimeout(savingTimeout.current);
     savingTimeout.current = setTimeout(() => setSaving(false), 450);
-  }
+  }, [selectedRequirement, upsertAnswer]);
 
   function submitCategory() {
     if (!canEditResponse) return;
@@ -392,7 +392,7 @@ export default function Home() {
     }
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [canEditResponse, selectedRequirement, workspaceView]);
+  }, [canEditResponse, goToRequirement, jumpToNextIncomplete, selectedRequirement, updateAnswer, workspaceView]);
 
   if (!hydrated || sessionStatus === 'loading' || (sessionStatus === 'authenticated' && (workspaceLoading || !sessionLoaded))) {
     return (

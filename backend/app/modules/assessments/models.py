@@ -3,8 +3,17 @@
 import uuid
 from datetime import date, datetime
 
-from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Integer, Numeric, String, Text, UniqueConstraint
-from sqlalchemy.dialects.postgresql import ARRAY, UUID
+from sqlalchemy import (
+    Boolean,
+    Date,
+    DateTime,
+    ForeignKey,
+    Integer,
+    String,
+    Text,
+    UniqueConstraint,
+)
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import Base, TimestampMixin, UUIDPrimaryKeyMixin
@@ -25,12 +34,12 @@ class Assessment(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     due_date: Mapped[date | None] = mapped_column(Date)
     submitted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     approved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
-    created_by: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    created_by: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("users.id"), nullable=False
+    )
     deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
-    responses: Mapped[list["Response"]] = relationship(
-        back_populates="assessment", lazy="noload"
-    )
+    responses: Mapped[list["Response"]] = relationship(back_populates="assessment", lazy="noload")
     evidence_list: Mapped[list["Evidence"]] = relationship(
         back_populates="assessment", lazy="noload"
     )
@@ -58,8 +67,12 @@ class Response(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     is_complete: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     review_outcome: Mapped[str | None] = mapped_column(String(50))
     review_feedback: Mapped[str | None] = mapped_column(Text)
-    answered_by: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"))
-    last_updated_by: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"))
+    answered_by: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("users.id")
+    )
+    last_updated_by: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("users.id")
+    )
 
     assessment: Mapped["Assessment"] = relationship(back_populates="responses", lazy="joined")
     comments: Mapped[list["ResponseComment"]] = relationship(
@@ -79,7 +92,9 @@ class FileObject(Base, TimestampMixin):
     sha256_checksum: Mapped[str] = mapped_column(String(64), nullable=False)
     scan_status: Mapped[str] = mapped_column(String(50), nullable=False, default="PENDING")
     scanned_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
-    uploaded_by: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    uploaded_by: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("users.id"), nullable=False
+    )
 
 
 class Evidence(UUIDPrimaryKeyMixin, TimestampMixin, Base):
@@ -88,8 +103,12 @@ class Evidence(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     assessment_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("assessments.id"), nullable=False
     )
-    file_object_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("file_objects.id"))
-    requirement_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("requirements.id"))
+    file_object_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("file_objects.id")
+    )
+    requirement_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("requirements.id")
+    )
     title: Mapped[str | None] = mapped_column(String(500))
     description: Mapped[str | None] = mapped_column(Text)
     evidence_type: Mapped[str | None] = mapped_column(String(100))
@@ -97,7 +116,9 @@ class Evidence(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     confidentiality: Mapped[str] = mapped_column(String(50), nullable=False, default="STANDARD")
     is_archived: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     version: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
-    uploaded_by: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    uploaded_by: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("users.id"), nullable=False
+    )
 
     assessment: Mapped["Assessment"] = relationship(back_populates="evidence_list", lazy="joined")
 
@@ -126,7 +147,9 @@ class ResponseComment(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     response_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), ForeignKey("responses.id"), nullable=False
     )
-    author_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+    author_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("users.id"), nullable=False
+    )
     author_name: Mapped[str] = mapped_column(String(255), nullable=False)
     author_role: Mapped[str] = mapped_column(String(50), nullable=False)
     message: Mapped[str] = mapped_column(Text, nullable=False)
