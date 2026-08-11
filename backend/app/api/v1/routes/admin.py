@@ -1,8 +1,8 @@
 """Admin reporting API."""
 
 import uuid
-from io import BytesIO
 from datetime import date, datetime
+from io import BytesIO
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -15,8 +15,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.security import CurrentUser, require_admin
 from app.db.session import get_db
 from app.modules.assessments.models import Assessment, AssessmentSectionStatus, Response
-from app.modules.audit.service import record_audit_event
 from app.modules.audit.models import AuditEvent
+from app.modules.audit.service import record_audit_event
 from app.modules.organizations.models import Organization, User
 from app.modules.questionnaires.models import Requirement
 
