@@ -1,7 +1,7 @@
 """Admin reporting API."""
 
 import uuid
-from datetime import date, datetime
+from datetime import UTC, date, datetime
 from io import BytesIO
 from typing import Annotated
 
@@ -283,7 +283,7 @@ async def export_admin_assessments(db: Db, current: AdminAuth):
         actor_id=actor.id if actor else None,
         details={"assessment_count": len(summaries), "format": "xlsx"},
     )
-    filename = f"admin-assessments-{datetime.now().strftime('%Y%m%d-%H%M%S')}.xlsx"
+    filename = f"admin-assessments-{datetime.now(UTC).strftime('%Y%m%d-%H%M%S')}.xlsx"
     return StreamingResponse(
         workbook,
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
